@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.log_textbox = new System.Windows.Forms.TextBox();
             this.log_label = new System.Windows.Forms.Label();
             this.LISTA = new System.Windows.Forms.ListView();
@@ -56,6 +57,12 @@
             this.radioButton3 = new System.Windows.Forms.RadioButton();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.Progress_text_box = new System.Windows.Forms.TextBox();
+            this.button1 = new System.Windows.Forms.Button();
+            this.hScrollBar1 = new System.Windows.Forms.HScrollBar();
+            this.label3 = new System.Windows.Forms.Label();
+            this.zakres_text_box = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.SuspendLayout();
@@ -192,12 +199,12 @@
             // 
             // skanuj_button
             // 
-            this.skanuj_button.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.skanuj_button.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.skanuj_button.Location = new System.Drawing.Point(703, 39);
             this.skanuj_button.Name = "skanuj_button";
             this.skanuj_button.Size = new System.Drawing.Size(157, 43);
             this.skanuj_button.TabIndex = 5;
-            this.skanuj_button.Text = "SKANUJ";
+            this.skanuj_button.Text = "SKANUJ LISTENINGI";
             this.skanuj_button.UseVisualStyleBackColor = true;
             this.skanuj_button.Click += new System.EventHandler(this.skanuj_button_Click);
             // 
@@ -221,7 +228,7 @@
             // 
             // podsluch_alert
             // 
-            this.podsluch_alert.Location = new System.Drawing.Point(703, 88);
+            this.podsluch_alert.Location = new System.Drawing.Point(702, 157);
             this.podsluch_alert.Name = "podsluch_alert";
             this.podsluch_alert.Size = new System.Drawing.Size(157, 20);
             this.podsluch_alert.TabIndex = 8;
@@ -229,7 +236,7 @@
             // radioButton1
             // 
             this.radioButton1.AutoSize = true;
-            this.radioButton1.Location = new System.Drawing.Point(704, 128);
+            this.radioButton1.Location = new System.Drawing.Point(727, 88);
             this.radioButton1.Name = "radioButton1";
             this.radioButton1.Size = new System.Drawing.Size(82, 17);
             this.radioButton1.TabIndex = 9;
@@ -241,7 +248,7 @@
             // radioButton2
             // 
             this.radioButton2.AutoSize = true;
-            this.radioButton2.Location = new System.Drawing.Point(704, 151);
+            this.radioButton2.Location = new System.Drawing.Point(727, 111);
             this.radioButton2.Name = "radioButton2";
             this.radioButton2.Size = new System.Drawing.Size(99, 17);
             this.radioButton2.TabIndex = 10;
@@ -253,7 +260,7 @@
             // radioButton3
             // 
             this.radioButton3.AutoSize = true;
-            this.radioButton3.Location = new System.Drawing.Point(704, 174);
+            this.radioButton3.Location = new System.Drawing.Point(727, 134);
             this.radioButton3.Name = "radioButton3";
             this.radioButton3.Size = new System.Drawing.Size(94, 17);
             this.radioButton3.TabIndex = 11;
@@ -264,24 +271,83 @@
             // 
             // progressBar1
             // 
-            this.progressBar1.Location = new System.Drawing.Point(704, 226);
-            this.progressBar1.Maximum = 255;
+            this.progressBar1.Location = new System.Drawing.Point(702, 334);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(156, 22);
+            this.progressBar1.Size = new System.Drawing.Size(107, 22);
             this.progressBar1.TabIndex = 12;
             // 
             // Progress_text_box
             // 
-            this.Progress_text_box.Location = new System.Drawing.Point(730, 254);
+            this.Progress_text_box.BackColor = System.Drawing.Color.White;
+            this.Progress_text_box.Location = new System.Drawing.Point(812, 334);
             this.Progress_text_box.Name = "Progress_text_box";
-            this.Progress_text_box.Size = new System.Drawing.Size(100, 20);
+            this.Progress_text_box.Size = new System.Drawing.Size(47, 20);
             this.Progress_text_box.TabIndex = 13;
+            // 
+            // button1
+            // 
+            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.button1.Location = new System.Drawing.Point(702, 204);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(157, 43);
+            this.button1.TabIndex = 14;
+            this.button1.Text = "PINGUJ PODSIEĆ";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // hScrollBar1
+            // 
+            this.hScrollBar1.LargeChange = 1;
+            this.hScrollBar1.Location = new System.Drawing.Point(703, 270);
+            this.hScrollBar1.Maximum = 255;
+            this.hScrollBar1.Name = "hScrollBar1";
+            this.hScrollBar1.Size = new System.Drawing.Size(106, 17);
+            this.hScrollBar1.TabIndex = 15;
+            this.hScrollBar1.Value = 255;
+            this.hScrollBar1.ValueChanged += new System.EventHandler(this.hScrollBar1_ValueChanged);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(727, 250);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(100, 13);
+            this.label3.TabIndex = 16;
+            this.label3.Text = "Zakres skanowania";
+            // 
+            // zakres_text_box
+            // 
+            this.zakres_text_box.Location = new System.Drawing.Point(813, 270);
+            this.zakres_text_box.Name = "zakres_text_box";
+            this.zakres_text_box.Size = new System.Drawing.Size(46, 20);
+            this.zakres_text_box.TabIndex = 17;
+            this.zakres_text_box.Text = "255";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(727, 318);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(108, 13);
+            this.label4.TabIndex = 18;
+            this.label4.Text = "Progress skanowania";
+            // 
+            // notifyIcon1
+            // 
+            this.notifyIcon1.Text = "notifyIcon1";
+            this.notifyIcon1.Visible = true;
+            this.notifyIcon1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseDoubleClick);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1352, 842);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.zakres_text_box);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.hScrollBar1);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.Progress_text_box);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.radioButton3);
@@ -298,6 +364,7 @@
             this.Controls.Add(this.pictureBox2);
             this.Name = "Form1";
             this.Text = "Form1";
+            this.SizeChanged += new System.EventHandler(this.Form1_SizeChanged);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.ResumeLayout(false);
@@ -335,6 +402,12 @@
         private System.Windows.Forms.RadioButton radioButton3;
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.TextBox Progress_text_box;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.HScrollBar hScrollBar1;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox zakres_text_box;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.NotifyIcon notifyIcon1;
     }
 }
 

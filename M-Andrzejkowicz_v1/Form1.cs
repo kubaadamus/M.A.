@@ -33,9 +33,6 @@ namespace M_Andrzejkowicz_v1
         {
             InitializeComponent();
             ipAddress = NetworkGateway();
-
-           
-
         }
 
 
@@ -228,33 +225,12 @@ namespace M_Andrzejkowicz_v1
 
 
 
-            //URUCHOM THREADA
-            List<string> list = new List<string>();
-                var progress = new Progress<ProgressReport>();
-                progress.ProgressChanged += (o, report) =>
-                  {
 
-                      progressBar1.Value = report.PercentComplete;
-                      Progress_text_box.Text = report.PercentComplete.ToString();
-                      log_textbox.AppendText(report.ConsoleOutput);
-                      progressBar1.Update();
-                  };
-                await ProcessData(progress);
 
 
         }
 
 
-        private void startujPingowaniePodsieci()
-        {
-            Console.WriteLine("PINGUJEEEEE");
-            for (int i = 0; i < 255; i++)
-            {
-                string IpAddress = DefaultGetaway;
-                String Query = (CmdQuery("ping", " 192.168.0." + i + " -n 1"));
-                Console.WriteLine(Query);
-            }
-        }
 
         private Task ProcessData(IProgress<ProgressReport> progress)
         {
@@ -262,7 +238,7 @@ namespace M_Andrzejkowicz_v1
             return Task.Run(() =>
             {
 
-                for (int i = 0; i < 255; i++)
+                for (int i = 0; i < hScrollBar1.Value+2; i++)
                 {
                     string IpAddress = DefaultGetaway;
                     String Query = (CmdQuery("ping", " 192.168.0." + i + " -n 1"));
@@ -271,7 +247,49 @@ namespace M_Andrzejkowicz_v1
                     progressReport.ConsoleOutput = Query;
                     progress.Report(progressReport);
                 }
+                progressReport.PercentComplete = 0;
+                progressReport.ConsoleOutput = "SPINGOWANO PODSIEC";
+                progress.Report(progressReport);
             });
+        }
+
+        private async void button1_Click(object sender, EventArgs e)
+        {
+            //URUCHOM THREADA
+            var progress = new Progress<ProgressReport>();
+            progress.ProgressChanged += (o, report) =>
+            {
+
+                progressBar1.Value = report.PercentComplete*100/hScrollBar1.Value;
+                Progress_text_box.Text = report.PercentComplete.ToString();
+                log_textbox.AppendText(report.ConsoleOutput);
+                progressBar1.Update();
+            };
+            await ProcessData(progress);
+        }
+
+        private void hScrollBar1_ValueChanged(object sender, EventArgs e)
+        {
+            zakres_text_box.Text = hScrollBar1.Value.ToString();
+        }
+
+        private void Form1_SizeChanged(object sender, EventArgs e)
+        {
+
+                notifyIcon1.Icon = SystemIcons.Application;
+                notifyIcon1.BalloonTipText = "Aplikacja zminimalizowana :3";
+                notifyIcon1.ShowBalloonTip(1000);
+                this.ShowInTaskbar = false;
+                notifyIcon1.Visible = true;
+
+            
+        }
+
+        private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            this.WindowState = FormWindowState.Normal;
+            this.ShowInTaskbar = true;
+            notifyIcon1.Visible = false;
         }
     }
 }
