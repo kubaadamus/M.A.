@@ -20,12 +20,15 @@ namespace M_Andrzejkowicz_v1
     {
         string ipAddress;
         string[] connections_array;
+        List<List<string>> TablicaRzeczy = new List<List<string>>();
+        List<string> Wiersz = new List<string>();
+        Boolean dodajWiersz = true;
 
         public Form1()
         {
             InitializeComponent();
             ipAddress = NetworkGateway();
-            skanuj_button_Click(ipAddress);
+            
 
 
 
@@ -54,6 +57,9 @@ namespace M_Andrzejkowicz_v1
             //Console.WriteLine("StrOutput" + strOutput);
             log_textbox.Text = strOutput;
 
+            Wiersz.Clear();
+            TablicaRzeczy.Clear();
+            dodajWiersz = true;
 
             Char[] delimiter = {' ','.',':'};
             String[] substrings = strOutput.Split(delimiter);
@@ -73,13 +79,11 @@ namespace M_Andrzejkowicz_v1
 
             }
 
-            List<List<string>> TablicaRzeczy = new List<List<string>>();
-            List<string> Wiersz = new List<string>();
-            Boolean dodajWiersz = true;
+
 
             foreach (var substring in substrings)
             {
-                Wiersz.Add(substring);
+                Wiersz.Add(substring.Replace("|",""));
                 if(substring.IndexOf("[") >= 0 || substring.IndexOf("*") >= 0 || substring.IndexOf("Active") >= 0 || substring.IndexOf("Proto") >= 0)
                 {
                     dodajWiersz = false;
@@ -138,5 +142,10 @@ namespace M_Andrzejkowicz_v1
             return ip;
         }
 
+        private void skanuj_button_Click(object sender, EventArgs e)
+        {
+            LISTA.Items.Clear();
+            skanuj_button_Click(ipAddress);
+        }
     }
 }

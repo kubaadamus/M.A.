@@ -37,17 +37,21 @@
             this.L1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.L2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.L3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.LP = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.L_port = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.F0 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.F1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.F2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.F3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.FP = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.F_port = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.State = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.PID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.skanuj_button = new System.Windows.Forms.Button();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.SuspendLayout();
             // 
             // log_textbox
@@ -77,12 +81,12 @@
             this.L1,
             this.L2,
             this.L3,
-            this.LP,
+            this.L_port,
             this.F0,
             this.F1,
             this.F2,
             this.F3,
-            this.FP,
+            this.F_port,
             this.State,
             this.PID});
             this.LISTA.FullRowSelect = true;
@@ -122,10 +126,10 @@
             this.L3.Text = "L3";
             this.L3.Width = 34;
             // 
-            // LP
+            // L_port
             // 
-            this.LP.Text = "LP";
-            this.LP.Width = 51;
+            this.L_port.Text = "L_port";
+            this.L_port.Width = 51;
             // 
             // F0
             // 
@@ -147,10 +151,10 @@
             this.F3.Text = "F3";
             this.F3.Width = 33;
             // 
-            // FP
+            // F_port
             // 
-            this.FP.Text = "FP";
-            this.FP.Width = 49;
+            this.F_port.Text = "F_port";
+            this.F_port.Width = 49;
             // 
             // State
             // 
@@ -165,7 +169,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(264, 9);
+            this.label1.Location = new System.Drawing.Point(249, 12);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(74, 13);
             this.label1.TabIndex = 3;
@@ -174,7 +178,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(462, 9);
+            this.label2.Location = new System.Drawing.Point(426, 12);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(83, 13);
             this.label2.TabIndex = 4;
@@ -182,12 +186,32 @@
             // 
             // skanuj_button
             // 
-            this.skanuj_button.Location = new System.Drawing.Point(744, 39);
+            this.skanuj_button.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.skanuj_button.Location = new System.Drawing.Point(703, 39);
             this.skanuj_button.Name = "skanuj_button";
-            this.skanuj_button.Size = new System.Drawing.Size(75, 23);
+            this.skanuj_button.Size = new System.Drawing.Size(157, 43);
             this.skanuj_button.TabIndex = 5;
             this.skanuj_button.Text = "SKANUJ";
             this.skanuj_button.UseVisualStyleBackColor = true;
+            this.skanuj_button.Click += new System.EventHandler(this.skanuj_button_Click);
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
+            this.pictureBox1.Location = new System.Drawing.Point(381, 12);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(177, 21);
+            this.pictureBox1.TabIndex = 6;
+            this.pictureBox1.TabStop = false;
+            // 
+            // pictureBox2
+            // 
+            this.pictureBox2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+            this.pictureBox2.Location = new System.Drawing.Point(198, 12);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(177, 21);
+            this.pictureBox2.TabIndex = 7;
+            this.pictureBox2.TabStop = false;
             // 
             // Form1
             // 
@@ -200,8 +224,12 @@
             this.Controls.Add(this.LISTA);
             this.Controls.Add(this.log_label);
             this.Controls.Add(this.log_textbox);
+            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.pictureBox2);
             this.Name = "Form1";
             this.Text = "Form1";
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -217,18 +245,20 @@
         private System.Windows.Forms.ColumnHeader L1;
         private System.Windows.Forms.ColumnHeader L2;
         private System.Windows.Forms.ColumnHeader L3;
-        private System.Windows.Forms.ColumnHeader LP;
+        private System.Windows.Forms.ColumnHeader L_port;
         private System.Windows.Forms.ColumnHeader F0;
         private System.Windows.Forms.ColumnHeader F1;
         private System.Windows.Forms.ColumnHeader F2;
         private System.Windows.Forms.ColumnHeader F3;
-        private System.Windows.Forms.ColumnHeader FP;
+        private System.Windows.Forms.ColumnHeader F_port;
         private System.Windows.Forms.ColumnHeader State;
         private System.Windows.Forms.ColumnHeader PID;
         private System.Windows.Forms.ColumnHeader Index;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button skanuj_button;
+        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.PictureBox pictureBox2;
     }
 }
 
