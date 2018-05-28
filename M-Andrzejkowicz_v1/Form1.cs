@@ -23,6 +23,7 @@ namespace M_Andrzejkowicz_v1
         List<List<string>> TablicaRzeczy = new List<List<string>>();
         List<string> Wiersz = new List<string>();
         Boolean dodajWiersz = true;
+        String WatchStatus = "LISTENING";
 
         public Form1()
         {
@@ -83,6 +84,7 @@ namespace M_Andrzejkowicz_v1
 
             foreach (var substring in substrings)
             {
+                // SPRAWDZANIE CZY W JAKIMŚ WIERSZU SĄ JAKIEŚ RZECZY!
                 Wiersz.Add(substring.Replace("|",""));
                 if(substring.IndexOf("[") >= 0 || substring.IndexOf("*") >= 0 || substring.IndexOf("Active") >= 0 || substring.IndexOf("Proto") >= 0)
                 {
@@ -117,9 +119,9 @@ namespace M_Andrzejkowicz_v1
             Console.WriteLine("lolz");
 
 
-            int matches = Regex.Matches(strOutput, "0.0.0.0").Count;
-            Console.WriteLine("{0} occurrences", matches);
-            Console.WriteLine("Podsłuchuje cie " + matches + " koleszków");
+            //int matches = Regex.Matches(strOutput, "0.0.0.0").Count;
+            //Console.WriteLine("{0} occurrences", matches);
+            //Console.WriteLine("Podsłuchuje cie " + matches + " koleszków");
 
         }
         static string NetworkGateway()
@@ -144,8 +146,41 @@ namespace M_Andrzejkowicz_v1
 
         private void skanuj_button_Click(object sender, EventArgs e)
         {
+            podsluch_alert.Text = "CZYSTO :3";
             LISTA.Items.Clear();
             skanuj_button_Click(ipAddress);
+
+            //Przejedz znow przez tablice i sprawdz czy ktos nas podsłuchuje
+            int index = 0;
+            foreach (List<string> y in TablicaRzeczy)
+            {
+                if(y[7]!="0" || y[8] != "0" || y[9] != "0" || y[10] != "0" )
+                {
+                    if(y[11] == WatchStatus)
+                    {
+                        Console.WriteLine("PODSŁUCH! na pozycji: " + index);
+                        podsluch_alert.Text = "WYKRYTO PODSŁUCH!";
+                        LISTA.Items[index].BackColor = Color.Red;
+                    }
+                    Console.WriteLine("MAMY NIEZEROWE FOREIGNY!");
+                }
+                index++;
+            }
+        }
+
+        private void radioButton1_CheckedChanged(object sender, EventArgs e)
+        {
+            WatchStatus = "LISTENING";
+        }
+
+        private void radioButton2_CheckedChanged(object sender, EventArgs e)
+        {
+            WatchStatus = "ESTABLISHED";
+        }
+
+        private void radioButton3_CheckedChanged(object sender, EventArgs e)
+        {
+            WatchStatus = "CLOSE_WAIT";
         }
     }
 }
