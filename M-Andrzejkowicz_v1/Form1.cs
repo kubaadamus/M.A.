@@ -51,19 +51,68 @@ namespace M_Andrzejkowicz_v1
             }
             
 
-            Console.WriteLine("StrOutput" + strOutput);
+            //Console.WriteLine("StrOutput" + strOutput);
             log_textbox.Text = strOutput;
 
 
-            Char delimiter = ' ';
+            Char[] delimiter = {' ','.',':'};
             String[] substrings = strOutput.Split(delimiter);
+
+            for(int i=0; i<substrings.Length; i++)
+            {
+                if(substrings[i].IndexOf("\r\n")>0)
+                {
+                    substrings[i] = substrings[i].Replace("\r\n\r\n", "|");
+                    substrings[i] = substrings[i].Replace("\r\n", "|");
+                }
+                else
+                {
+                    substrings[i] = substrings[i].Replace("\r\n\r\n", "");
+                    substrings[i] = substrings[i].Replace("\r\n", "");
+                }
+
+            }
+
+            List<List<string>> TablicaRzeczy = new List<List<string>>();
+            List<string> Wiersz = new List<string>();
+            Boolean dodajWiersz = true;
 
             foreach (var substring in substrings)
             {
-                Console.WriteLine(substring + "//");
+                Wiersz.Add(substring);
+                if(substring.IndexOf("[") >= 0 || substring.IndexOf("*") >= 0 || substring.IndexOf("Active") >= 0 || substring.IndexOf("Proto") >= 0)
+                {
+                    dodajWiersz = false;
+                }
+                if(substring.IndexOf("|")>=0)
+                {
+                    if(dodajWiersz)
+                    {
+                        TablicaRzeczy.Add(new List<string>(Wiersz));
+                    }
+                    Wiersz.Clear();
+                    dodajWiersz = true;
+                }
+            }
+            Console.WriteLine("ITERUJEMY!");
+            //Iterujemy poprzez listę list
+            int index = 0;
+            foreach ( List<string> y in TablicaRzeczy)
+            {
+                ListViewItem lvi = new ListViewItem(index.ToString());
+                index++;
+                foreach(string x in y)
+                {
+                    Console.Write(""+x+"");
+                    lvi.SubItems.Add(x);
+                }
+                LISTA.Items.Add(lvi);
             }
 
-            
+
+            Console.WriteLine("lolz");
+
+
             int matches = Regex.Matches(strOutput, "0.0.0.0").Count;
             Console.WriteLine("{0} occurrences", matches);
             Console.WriteLine("Podsłuchuje cie " + matches + " koleszków");
@@ -89,9 +138,5 @@ namespace M_Andrzejkowicz_v1
             return ip;
         }
 
-        private void log_label_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }
