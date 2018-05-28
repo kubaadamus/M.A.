@@ -27,14 +27,39 @@ namespace M_Andrzejkowicz_v1
         String DefaultGetaway = "";
         Process Process = new System.Diagnostics.Process();
 
-
+        static System.Windows.Forms.Timer myTimer = new System.Windows.Forms.Timer();
 
         public Form1()
         {
             InitializeComponent();
             ipAddress = NetworkGateway();
+            SkanujPodsiec();
+
+            myTimer.Tick += new EventHandler(TimerEventProcessor);
+            myTimer.Interval = 5000;
+            myTimer.Start();
+
+
         }
 
+        private void TimerEventProcessor(Object myObject, EventArgs myEventArgs)
+        {
+            
+            String PingOutput = (CmdQuery("ping ", DefaultGetaway + " -n 1"));
+            if (PingOutput.IndexOf("unreachable") >= 0)
+            {
+                Console.WriteLine("ALARM! NIE UDAŁO SIE SPINGOWAC!");
+                IntervalPingTextbox.Text = "Pingowanie " + DefaultGetaway + "ZJEBAWSZY! ALARM! \r\n " + DateTime.Now;
+                AlarmBox.BackColor = Color.Red;
+            }
+            else
+            {
+                Console.WriteLine("Pingowanie Default Gatewaya w porządku :3");
+                IntervalPingTextbox.Text = "Pingowanie "+DefaultGetaway+" OK \r\n " + DateTime.Now;
+                AlarmBox.BackColor = Color.Green;
+            }
+
+        }
 
         private string CmdQuery(string FileName, string Arguments = "")
         {

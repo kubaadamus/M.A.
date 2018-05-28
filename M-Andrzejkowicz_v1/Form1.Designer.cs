@@ -63,8 +63,12 @@
             this.zakres_text_box = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
+            this.label5 = new System.Windows.Forms.Label();
+            this.IntervalPingTextbox = new System.Windows.Forms.TextBox();
+            this.AlarmBox = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.AlarmBox)).BeginInit();
             this.SuspendLayout();
             // 
             // log_textbox
@@ -338,11 +342,40 @@
             this.notifyIcon1.Visible = true;
             this.notifyIcon1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseDoubleClick);
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(724, 405);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(112, 26);
+            this.label5.TabIndex = 19;
+            this.label5.Text = "Okresowe pingowanie\r\n   Default Gatewaya";
+            // 
+            // IntervalPingTextbox
+            // 
+            this.IntervalPingTextbox.Location = new System.Drawing.Point(702, 434);
+            this.IntervalPingTextbox.Multiline = true;
+            this.IntervalPingTextbox.Name = "IntervalPingTextbox";
+            this.IntervalPingTextbox.Size = new System.Drawing.Size(157, 67);
+            this.IntervalPingTextbox.TabIndex = 20;
+            // 
+            // AlarmBox
+            // 
+            this.AlarmBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+            this.AlarmBox.Location = new System.Drawing.Point(745, 507);
+            this.AlarmBox.Name = "AlarmBox";
+            this.AlarmBox.Size = new System.Drawing.Size(64, 30);
+            this.AlarmBox.TabIndex = 21;
+            this.AlarmBox.TabStop = false;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1352, 842);
+            this.Controls.Add(this.AlarmBox);
+            this.Controls.Add(this.IntervalPingTextbox);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.zakres_text_box);
             this.Controls.Add(this.label3);
@@ -367,6 +400,7 @@
             this.SizeChanged += new System.EventHandler(this.Form1_SizeChanged);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.AlarmBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -408,6 +442,9 @@
         private System.Windows.Forms.TextBox zakres_text_box;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.NotifyIcon notifyIcon1;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox IntervalPingTextbox;
+        private System.Windows.Forms.PictureBox AlarmBox;
     }
 }
 
