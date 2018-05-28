@@ -34,13 +34,10 @@ namespace M_Andrzejkowicz_v1
             InitializeComponent();
             ipAddress = NetworkGateway();
 
-
-            
-
-
-
+           
 
         }
+
 
         private string CmdQuery(string FileName, string Arguments = "")
         {
@@ -220,7 +217,7 @@ namespace M_Andrzejkowicz_v1
 
             }
         }
-        private void skanuj_button_Click(object sender, EventArgs e)
+        private async void skanuj_button_Click(object sender, EventArgs e)
         {
             podsluch_alert.Text = "CZYSTO :3";
             LISTA.Items.Clear();
@@ -228,15 +225,29 @@ namespace M_Andrzejkowicz_v1
             SprawdzPodsluchy();
             SkanujPodsiec();
             CmdQueryAdmin("arp -d");
-            //PingujPodsiec();
-            Task.Factory.StartNew(() => BigLongImportantMethod()).ContinueWith(t => Console.WriteLine("koniec"),TaskScheduler.FromCurrentSynchronizationContext());
-        }
-        private void PingujPodsiec()
-        {
+
+
+
+            //URUCHOM THREADA
+            List<string> list = new List<string>();
+                var progress = new Progress<ProgressReport>();
+                progress.ProgressChanged += (o, report) =>
+                  {
+
+                      progressBar1.Value = report.PercentComplete;
+                      Progress_text_box.Text = report.PercentComplete.ToString();
+                      log_textbox.AppendText(report.ConsoleOutput);
+                      progressBar1.Update();
+                  };
+                await ProcessData(progress);
+
+
         }
 
-        private void BigLongImportantMethod()
+
+        private void startujPingowaniePodsieci()
         {
+            Console.WriteLine("PINGUJEEEEE");
             for (int i = 0; i < 255; i++)
             {
                 string IpAddress = DefaultGetaway;
@@ -245,6 +256,22 @@ namespace M_Andrzejkowicz_v1
             }
         }
 
+        private Task ProcessData(IProgress<ProgressReport> progress)
+        {
+            var progressReport = new ProgressReport();
+            return Task.Run(() =>
+            {
 
+                for (int i = 0; i < 255; i++)
+                {
+                    string IpAddress = DefaultGetaway;
+                    String Query = (CmdQuery("ping", " 192.168.0." + i + " -n 1"));
+                    Console.WriteLine(Query);
+                    progressReport.PercentComplete = i;
+                    progressReport.ConsoleOutput = Query;
+                    progress.Report(progressReport);
+                }
+            });
+        }
     }
 }

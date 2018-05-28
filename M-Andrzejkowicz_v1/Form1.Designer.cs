@@ -55,7 +55,7 @@
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.radioButton3 = new System.Windows.Forms.RadioButton();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
-            this.PingProgress = new System.Windows.Forms.Label();
+            this.Progress_text_box = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.SuspendLayout();
@@ -270,21 +270,19 @@
             this.progressBar1.Size = new System.Drawing.Size(156, 22);
             this.progressBar1.TabIndex = 12;
             // 
-            // PingProgress
+            // Progress_text_box
             // 
-            this.PingProgress.AutoSize = true;
-            this.PingProgress.Location = new System.Drawing.Point(745, 251);
-            this.PingProgress.Name = "PingProgress";
-            this.PingProgress.Size = new System.Drawing.Size(69, 13);
-            this.PingProgress.TabIndex = 13;
-            this.PingProgress.Text = "PingProgress";
+            this.Progress_text_box.Location = new System.Drawing.Point(730, 254);
+            this.Progress_text_box.Name = "Progress_text_box";
+            this.Progress_text_box.Size = new System.Drawing.Size(100, 20);
+            this.Progress_text_box.TabIndex = 13;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1352, 842);
-            this.Controls.Add(this.PingProgress);
+            this.Controls.Add(this.Progress_text_box);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.radioButton3);
             this.Controls.Add(this.radioButton2);
@@ -336,7 +334,7 @@
         private System.Windows.Forms.RadioButton radioButton2;
         private System.Windows.Forms.RadioButton radioButton3;
         private System.Windows.Forms.ProgressBar progressBar1;
-        private System.Windows.Forms.Label PingProgress;
+        private System.Windows.Forms.TextBox Progress_text_box;
     }
 }
 
