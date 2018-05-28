@@ -54,6 +54,8 @@
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.radioButton3 = new System.Windows.Forms.RadioButton();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.PingProgress = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.SuspendLayout();
@@ -260,11 +262,30 @@
             this.radioButton3.UseVisualStyleBackColor = true;
             this.radioButton3.CheckedChanged += new System.EventHandler(this.radioButton3_CheckedChanged);
             // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(704, 226);
+            this.progressBar1.Maximum = 255;
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(156, 22);
+            this.progressBar1.TabIndex = 12;
+            // 
+            // PingProgress
+            // 
+            this.PingProgress.AutoSize = true;
+            this.PingProgress.Location = new System.Drawing.Point(745, 251);
+            this.PingProgress.Name = "PingProgress";
+            this.PingProgress.Size = new System.Drawing.Size(69, 13);
+            this.PingProgress.TabIndex = 13;
+            this.PingProgress.Text = "PingProgress";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1352, 842);
+            this.Controls.Add(this.PingProgress);
+            this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.radioButton3);
             this.Controls.Add(this.radioButton2);
             this.Controls.Add(this.radioButton1);
@@ -314,6 +335,8 @@
         private System.Windows.Forms.RadioButton radioButton1;
         private System.Windows.Forms.RadioButton radioButton2;
         private System.Windows.Forms.RadioButton radioButton3;
+        private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.Label PingProgress;
     }
 }
 

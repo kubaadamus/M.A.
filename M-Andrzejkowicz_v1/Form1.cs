@@ -24,11 +24,17 @@ namespace M_Andrzejkowicz_v1
         List<string> Wiersz = new List<string>();
         Boolean dodajWiersz = true;
         String WatchStatus = "LISTENING";
+        String DefaultGetaway = "";
+        Process Process = new System.Diagnostics.Process();
+
+
 
         public Form1()
         {
             InitializeComponent();
             ipAddress = NetworkGateway();
+
+
             
 
 
@@ -36,27 +42,50 @@ namespace M_Andrzejkowicz_v1
 
         }
 
-
-
-        private void skanuj_button_Click(string ipAddress)
+        private string CmdQuery(string FileName, string Arguments = "")
         {
-            string macAddress = string.Empty;
-            Process Process = new System.Diagnostics.Process();
-            Process.StartInfo.FileName = "netstat";
-            Process.StartInfo.Arguments = "-ano";
+
+
+
+            //string macAddress = string.Empty;
+
+            Process.StartInfo.FileName = FileName;
+            Process.StartInfo.Arguments = Arguments;
             Process.StartInfo.UseShellExecute = false;
             Process.StartInfo.RedirectStandardOutput = true;
             Process.StartInfo.CreateNoWindow = true;
             Process.Start();
-            string strOutput = Process.StandardOutput.ReadToEnd();
-            while(strOutput.IndexOf("  ")>0)
+            string output = Process.StandardOutput.ReadToEnd();
+            while (output.IndexOf("  ") > 0)
             {
-                strOutput = strOutput.Replace("  ", " ");
+                output = output.Replace("  ", " ");
             }
+            return output;
+        } // Funkcja wywołuje jakąś rzecz w CMD i zwraca string z CMD
+        private void CmdQueryAdmin(string Argument)
+        {
+            var proc1 = new ProcessStartInfo();
+            string anyCommand;
+            proc1.UseShellExecute = true;
+
+            proc1.WorkingDirectory = @"C:\Windows\System32";
+
+            proc1.FileName = @"C:\Windows\System32\cmd.exe";
+            proc1.Verb = "runas";
+            proc1.Arguments = "/c " + Argument;
+            proc1.WindowStyle = ProcessWindowStyle.Hidden;
+            Process.Start(proc1);
+            Console.WriteLine("Wykonano zadanie admin CmdQueryAdmin: "+ Argument);
+        }
+        private void skanuj_button_Click(string ipAddress)
+        {
+
+            string strOutput = CmdQuery("netstat", "-ano");
             
 
+
             //Console.WriteLine("StrOutput" + strOutput);
-            log_textbox.Text = strOutput;
+            //log_textbox.Text = strOutput;
 
             Wiersz.Clear();
             TablicaRzeczy.Clear();
@@ -143,20 +172,27 @@ namespace M_Andrzejkowicz_v1
             Console.WriteLine(ip);
             return ip;
         }
-
-        private void skanuj_button_Click(object sender, EventArgs e)
+        private void radioButton1_CheckedChanged(object sender, EventArgs e)
         {
-            podsluch_alert.Text = "CZYSTO :3";
-            LISTA.Items.Clear();
-            skanuj_button_Click(ipAddress);
-
+            WatchStatus = "LISTENING";
+        }
+        private void radioButton2_CheckedChanged(object sender, EventArgs e)
+        {
+            WatchStatus = "ESTABLISHED";
+        }
+        private void radioButton3_CheckedChanged(object sender, EventArgs e)
+        {
+            WatchStatus = "CLOSE_WAIT";
+        }
+        private void SprawdzPodsluchy()
+        {
             //Przejedz znow przez tablice i sprawdz czy ktos nas podsłuchuje
             int index = 0;
             foreach (List<string> y in TablicaRzeczy)
             {
-                if(y[7]!="0" || y[8] != "0" || y[9] != "0" || y[10] != "0" )
+                if (y[7] != "0" || y[8] != "0" || y[9] != "0" || y[10] != "0")
                 {
-                    if(y[11] == WatchStatus)
+                    if (y[11] == WatchStatus)
                     {
                         Console.WriteLine("PODSŁUCH! na pozycji: " + index);
                         podsluch_alert.Text = "WYKRYTO PODSŁUCH!";
@@ -167,20 +203,48 @@ namespace M_Andrzejkowicz_v1
                 index++;
             }
         }
-
-        private void radioButton1_CheckedChanged(object sender, EventArgs e)
+        private void SkanujPodsiec()
         {
-            WatchStatus = "LISTENING";
+            Console.WriteLine(CmdQuery("ipconfig"));
+            String[] TabelaIpConfig = CmdQuery("ipconfig").Split('\n');
+            Console.WriteLine();
+            for(int i=0; i<TabelaIpConfig.Length; i++) // szukaj IP
+            {
+                if(TabelaIpConfig[i].IndexOf("Default Gateway") >=0) // Jesli w linijce znajduje sie IPv4
+                {
+                    TabelaIpConfig[i] = TabelaIpConfig[i].Remove(0, TabelaIpConfig[i].IndexOf(':')+1).Trim();
+                    Console.WriteLine("wypisuje!");
+                    DefaultGetaway = TabelaIpConfig[i];
+                    Console.WriteLine(DefaultGetaway);
+                }
+
+            }
+        }
+        private void skanuj_button_Click(object sender, EventArgs e)
+        {
+            podsluch_alert.Text = "CZYSTO :3";
+            LISTA.Items.Clear();
+            skanuj_button_Click(ipAddress);
+            SprawdzPodsluchy();
+            SkanujPodsiec();
+            CmdQueryAdmin("arp -d");
+            //PingujPodsiec();
+            Task.Factory.StartNew(() => BigLongImportantMethod()).ContinueWith(t => Console.WriteLine("koniec"),TaskScheduler.FromCurrentSynchronizationContext());
+        }
+        private void PingujPodsiec()
+        {
         }
 
-        private void radioButton2_CheckedChanged(object sender, EventArgs e)
+        private void BigLongImportantMethod()
         {
-            WatchStatus = "ESTABLISHED";
+            for (int i = 0; i < 255; i++)
+            {
+                string IpAddress = DefaultGetaway;
+                String Query = (CmdQuery("ping", " 192.168.0." + i + " -n 1"));
+                Console.WriteLine(Query);
+            }
         }
 
-        private void radioButton3_CheckedChanged(object sender, EventArgs e)
-        {
-            WatchStatus = "CLOSE_WAIT";
-        }
+
     }
 }
