@@ -26,6 +26,9 @@ namespace M_Andrzejkowicz_v1
         String WatchStatus = "LISTENING";
         String DefaultGetaway = "";
         Process Process = new System.Diagnostics.Process();
+        String PASSWORD=""; // HASŁO DO SIECI WIFI
+        String SSID = ""; // SSID WIFI
+        String SZYFROWANIE = ""; //SZYFROWANIE
 
         static System.Windows.Forms.Timer myTimer = new System.Windows.Forms.Timer();
 
@@ -50,12 +53,14 @@ namespace M_Andrzejkowicz_v1
             {
                 Console.WriteLine("ALARM! NIE UDAŁO SIE SPINGOWAC!");
                 IntervalPingTextbox.Text = "Pingowanie " + DefaultGetaway + "ZJEBAWSZY! ALARM! \r\n " + DateTime.Now;
+                log_textbox.AppendText("Pingowanie " + DefaultGetaway + "ZJEBAWSZY! ALARM! " + DateTime.Now + "\r\n");
                 AlarmBox.BackColor = Color.Red;
             }
             else
             {
                 Console.WriteLine("Pingowanie Default Gatewaya w porządku :3");
                 IntervalPingTextbox.Text = "Pingowanie "+DefaultGetaway+" OK \r\n " + DateTime.Now;
+                log_textbox.AppendText("Pingowanie " + DefaultGetaway + " OK \r\n " + DateTime.Now +"\r\n");
                 AlarmBox.BackColor = Color.Green;
             }
 
@@ -315,6 +320,60 @@ namespace M_Andrzejkowicz_v1
             this.WindowState = FormWindowState.Normal;
             this.ShowInTaskbar = true;
             notifyIcon1.Visible = false;
+        }
+
+        private void SprawdzNazweWifi()
+        {
+            SSID = CmdQuery("Netsh", " WLAN show interfaces");
+            SSID = ZnajdzLinijke(SSID, "SSID");
+            SSID = SSID.Replace("SSID:", "");
+            Console.WriteLine(SSID);
+            NazwaWifi.Text = SSID;
+        }
+        private void SprawdzSzyfrowanieWifi()
+        {
+            SZYFROWANIE = CmdQuery("Netsh", " WLAN show interfaces");
+            SZYFROWANIE = ZnajdzLinijke(SZYFROWANIE, "Authentication");
+            SZYFROWANIE = SZYFROWANIE.Replace("Authentication:", "");
+            Console.WriteLine(SZYFROWANIE);
+            szyfrowanie.Text = SZYFROWANIE;
+        }
+        private void SprawdzHasłoWifi()
+        {
+            PASSWORD = CmdQuery("netsh", " wlan show profile name=\"Domek\" key=clear");
+            PASSWORD = ZnajdzLinijke(PASSWORD, "Key Content");
+            PASSWORD = PASSWORD.Replace("KeyContent:", "");
+            Console.WriteLine(PASSWORD);
+            HasloWifi.Text = PASSWORD;
+            twojehaslo.Visible = true;
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            SprawdzNazweWifi();
+            SprawdzHasłoWifi();
+            SprawdzSzyfrowanieWifi();
+        }
+
+        string ZnajdzLinijke(string input, string StartString)
+        {
+            String output;
+
+            output = input.Remove(0, input.IndexOf(StartString));
+
+            output = output.Remove(output.IndexOf("\n"), output.Length-output.IndexOf("\n"));
+
+            output = output.Replace("\n", "");
+            output = output.Replace("\r", "");
+            output = output.Replace(" ", "");
+
+
+            return output;
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            HasloWifi.UseSystemPasswordChar = false;
         }
     }
 }

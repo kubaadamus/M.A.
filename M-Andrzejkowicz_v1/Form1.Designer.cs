@@ -66,6 +66,14 @@
             this.label5 = new System.Windows.Forms.Label();
             this.IntervalPingTextbox = new System.Windows.Forms.TextBox();
             this.AlarmBox = new System.Windows.Forms.PictureBox();
+            this.button2 = new System.Windows.Forms.Button();
+            this.NazwaWifi = new System.Windows.Forms.TextBox();
+            this.HasloWifi = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.twojehaslo = new System.Windows.Forms.Label();
+            this.szyfrowanie = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.button3 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.AlarmBox)).BeginInit();
@@ -368,11 +376,89 @@
             this.AlarmBox.TabIndex = 21;
             this.AlarmBox.TabStop = false;
             // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(745, 571);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.TabIndex = 22;
+            this.button2.Text = "Spr wIfi";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // NazwaWifi
+            // 
+            this.NazwaWifi.Location = new System.Drawing.Point(702, 619);
+            this.NazwaWifi.Name = "NazwaWifi";
+            this.NazwaWifi.Size = new System.Drawing.Size(155, 20);
+            this.NazwaWifi.TabIndex = 23;
+            // 
+            // HasloWifi
+            // 
+            this.HasloWifi.Location = new System.Drawing.Point(703, 671);
+            this.HasloWifi.Name = "HasloWifi";
+            this.HasloWifi.Size = new System.Drawing.Size(155, 20);
+            this.HasloWifi.TabIndex = 24;
+            this.HasloWifi.UseSystemPasswordChar = true;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(742, 603);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(64, 13);
+            this.label6.TabIndex = 25;
+            this.label6.Text = "Nazwa sieci";
+            // 
+            // twojehaslo
+            // 
+            this.twojehaslo.AutoSize = true;
+            this.twojehaslo.Location = new System.Drawing.Point(703, 642);
+            this.twojehaslo.Name = "twojehaslo";
+            this.twojehaslo.Size = new System.Drawing.Size(128, 26);
+            this.twojehaslo.TabIndex = 26;
+            this.twojehaslo.Text = "Twoje Haslo... \r\nwlasnie je zdobylem :> xD";
+            this.twojehaslo.Visible = false;
+            // 
+            // szyfrowanie
+            // 
+            this.szyfrowanie.Location = new System.Drawing.Point(703, 741);
+            this.szyfrowanie.Name = "szyfrowanie";
+            this.szyfrowanie.Size = new System.Drawing.Size(155, 20);
+            this.szyfrowanie.TabIndex = 27;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(743, 722);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(62, 13);
+            this.label7.TabIndex = 28;
+            this.label7.Text = "szyfrowanie";
+            // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(783, 696);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(75, 23);
+            this.button3.TabIndex = 29;
+            this.button3.Text = "poka ;_;";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1352, 842);
+            this.Controls.Add(this.button3);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.szyfrowanie);
+            this.Controls.Add(this.twojehaslo);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.HasloWifi);
+            this.Controls.Add(this.NazwaWifi);
+            this.Controls.Add(this.button2);
             this.Controls.Add(this.AlarmBox);
             this.Controls.Add(this.IntervalPingTextbox);
             this.Controls.Add(this.label5);
@@ -445,6 +531,14 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox IntervalPingTextbox;
         private System.Windows.Forms.PictureBox AlarmBox;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.TextBox NazwaWifi;
+        private System.Windows.Forms.TextBox HasloWifi;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label twojehaslo;
+        private System.Windows.Forms.TextBox szyfrowanie;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Button button3;
     }
 }
 
