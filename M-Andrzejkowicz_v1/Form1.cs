@@ -29,6 +29,7 @@ namespace M_Andrzejkowicz_v1
         String PASSWORD=""; // HASŁO DO SIECI WIFI
         String SSID = ""; // SSID WIFI
         String SZYFROWANIE = ""; //SZYFROWANIE
+        PasswordStrength SprawdzaczSilyHasla = new PasswordStrength();
 
         static System.Windows.Forms.Timer myTimer = new System.Windows.Forms.Timer();
 
@@ -60,7 +61,9 @@ namespace M_Andrzejkowicz_v1
             {
                 Console.WriteLine("Pingowanie Default Gatewaya w porządku :3");
                 IntervalPingTextbox.Text = "Pingowanie "+DefaultGetaway+" OK \r\n " + DateTime.Now;
+                log_textbox.AppendText("================================\r\n");
                 log_textbox.AppendText("Pingowanie " + DefaultGetaway + " OK \r\n " + DateTime.Now +"\r\n");
+                log_textbox.AppendText("================================\r\n");
                 AlarmBox.BackColor = Color.Green;
             }
 
@@ -278,8 +281,12 @@ namespace M_Andrzejkowicz_v1
                     progress.Report(progressReport);
                 }
                 progressReport.PercentComplete = 0;
-                progressReport.ConsoleOutput = "SPINGOWANO PODSIEC";
-                progress.Report(progressReport);
+                progressReport.ConsoleOutput = "\r\n======================================\r\n " +
+                                                "Pingowanie podsieci zakończone powodzeniem " +
+                                                "\r\n======================================\r\n";
+
+
+
             });
         }
 
@@ -353,6 +360,7 @@ namespace M_Andrzejkowicz_v1
             SprawdzNazweWifi();
             SprawdzHasłoWifi();
             SprawdzSzyfrowanieWifi();
+            SprawdzanieSilyHasla();
         }
 
         string ZnajdzLinijke(string input, string StartString)
@@ -374,6 +382,16 @@ namespace M_Andrzejkowicz_v1
         private void button3_Click(object sender, EventArgs e)
         {
             HasloWifi.UseSystemPasswordChar = false;
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            HasloWifi.UseSystemPasswordChar = true;
+        }
+
+        private void SprawdzanieSilyHasla()
+        {
+            log_textbox.AppendText("\r\n ======================================\r\n"+SprawdzaczSilyHasla.CheckStrength(SSID, PASSWORD)+"\r\n ======================================\r\n");
         }
     }
 }
