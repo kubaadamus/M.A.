@@ -35,6 +35,9 @@ namespace M_Andrzejkowicz_v1
         Boolean pingujpodsiec_continue = true;
         ProgressReport progressReport = new ProgressReport();
         int IloscPodlaczonychUrzadzen = 0;
+        int iloscThreadow = 0;
+
+        Boolean sprawdzajThready = false;
 
         List<string> OdpowiedzMultiThreadu = new List<string>();
 
@@ -51,12 +54,9 @@ namespace M_Andrzejkowicz_v1
             ipAddress = NetworkGateway();
             SkanujPodsiec();
 
-           // myTimer.Tick += new EventHandler(TimerEventProcessor);
-           // myTimer.Interval = 5000;
-           // myTimer.Start();
-
-
-
+           myTimer.Tick += new EventHandler(TimerEventProcessor);
+           myTimer.Interval = 5000;
+           myTimer.Start();
         }
         //====================================== E V E N T Y  T I M E R A =========================//
         static System.Windows.Forms.Timer myTimer = new System.Windows.Forms.Timer();
@@ -86,10 +86,26 @@ namespace M_Andrzejkowicz_v1
                 foreach(string a in arp)
                 {
                     Console.WriteLine(a + "\r\n");
-                    log_textbox.AppendText(a+"\r\n");
+                    log_textbox.AppendText(a + "\r\n");
                 }
 
                 progressReport.sprawdzArpa = false;
+            }
+
+            //Thready
+            if(iloscThreadow==255)
+            {
+                iloscThreadow = 0;
+                log_textbox.AppendText("PISZE!");
+                //log_textbox.Clear();
+
+                log_textbox.AppendText(CmdQuery("arp"," -a")+ "\r\n===================================================\r\n");
+                log_textbox.AppendText(DateTime.Now+"\r\n");
+
+                OdpowiedzMultiThreadu.Clear();
+                //UruchomPingowaniePodsieci();
+                
+
             }
         }
         //====================================== Z A P Y T A N I A  D O  C M D =========================//
@@ -105,12 +121,15 @@ namespace M_Andrzejkowicz_v1
             Process.StartInfo.UseShellExecute = false;
             Process.StartInfo.RedirectStandardOutput = true;
             Process.StartInfo.CreateNoWindow = true;
-            Process.Start();
-            string output = Process.StandardOutput.ReadToEnd();
-            while (output.IndexOf("  ") > 0)
-            {
-                output = output.Replace("  ", " ");
-            }
+            string output = "";
+
+                Process.Start();
+                output = Process.StandardOutput.ReadToEnd();
+                while (output.IndexOf("  ") > 0)
+                {
+                    output = output.Replace("  ", " ");
+                }
+            
             return output;
         }
         private void CmdQueryAdmin(string Argument)
@@ -294,7 +313,7 @@ namespace M_Andrzejkowicz_v1
             foreach(string a in arp)
             {
                 Console.WriteLine(a);
-                log_textbox.AppendText(a);
+                log_textbox.AppendText(a + "\r\n");
             }
 
         }
@@ -344,66 +363,6 @@ namespace M_Andrzejkowicz_v1
             SprawdzSzyfrowanieWifi();
             SprawdzanieSilyHasla();
         }
-        private void button1_Click(object sender, EventArgs e)
-        {
-            progressReport.PublicznaLista.Clear();
-            for(int i=0; i<250; i++)
-            {
-                th1 = new Thread(() => ThreadTest(i));
-                Thread.Sleep(10);
-                th1.Start();
-            }
-
-
-        }
-        public void ThreadTest(int i)
-        {
-
-            String Query = (CmdQuery("ping", " 192.168.0." + i + " -n 1"));
-            OdpowiedzMultiThreadu.Add(Query);
-            Console.WriteLine("Wątek nr " + i + " zakonczył dzialanie!");
-            Console.WriteLine(Query);
-
-            progressReport.PublicznaLista.Add(Query);
-        }
-
-
-        private void UruchomPingowaniePodsieci()
-        {
-
-            CmdQueryAdmin("arp -d");
-            CmdQueryAdmin("arp -d");
-            CmdQueryAdmin("arp -d");
-            Console.WriteLine("Ustalam stan początkowy - pinguję całą podsieć . . . ");
-            PingujPodsiec();
-        }
-        private async void PingujPodsiec()
-        {
-            pingujpodsiec_continue = true;
-            //URUCHOM THREADY
-            for(int i=0; i<255; i++)
-            {
-                var progress = new Progress<ProgressReport>();
-                progress.ProgressChanged += (o, report) =>
-                {
-
-                    progressBar1.Value = report.PercentComplete * 100 / hScrollBar1.Value;
-                    Progress_text_box.Text = report.PercentComplete.ToString();
-                    if (report.ConsoleOutput.IndexOf("unreachable") <= 0)
-                    {
-                        //log_textbox.AppendText("\r\n======================================\r\n" + report.ConsoleOutput + "\r\n ======================================\r\n");
-                    }
-                    else
-                    {
-                    }
-
-                    progressBar1.Update();
-                };
-                await ProcessData(progress,i);
-            }
-
-
-        }
         private void hScrollBar1_ValueChanged(object sender, EventArgs e)
         {
             zakres_text_box.Text = hScrollBar1.Value.ToString();
@@ -436,7 +395,7 @@ namespace M_Andrzejkowicz_v1
             skanuj_button_Click(ipAddress);
             SprawdzPodsluchy();
             SkanujPodsiec();
-            CmdQueryAdmin("arp -d");
+            
         }
         private void radioButton1_CheckedChanged(object sender, EventArgs e)
         {
@@ -522,18 +481,49 @@ namespace M_Andrzejkowicz_v1
         {
             HasloWifi.UseSystemPasswordChar = true;
         }
-
         private void button8_Click(object sender, EventArgs e)
         {
-            log_textbox.Clear();
-            foreach (string a in progressReport.PublicznaLista)
+            
+        }
+        // URUCHAMIANIE MULTITHREADOWEGO PINGOWANIA
+        private void button1_Click(object sender, EventArgs e)
+        {
+
+            UruchomPingowaniePodsieci();
+        }
+        private void UruchomPingowaniePodsieci()
+        {
+            
+            th2 = new Thread(() => UruchamiePingowaniaPodsieciThread());
+            th2.Start();
+
+        }
+        private void UruchamiePingowaniaPodsieciThread()
+        {
+
+            progressReport.PublicznaLista.Clear();
+            sprawdzajThready = true;
+            for (int i = 0; i < 255; i++)
             {
-                if(a.IndexOf("unreachable")<=0)
-                {
-                    log_textbox.AppendText(a + "\r\n===================================================\r\n");
-                }
-                
+                th1 = new Thread(() => ThreadTest(i));
+                Thread.Sleep(20);
+                th1.Start();
             }
         }
+        public void ThreadTest(int i)
+        {
+
+            String Query = (CmdQuery("ping", " 192.168.0." + i + " -n 1"));
+            OdpowiedzMultiThreadu.Add(Query);
+            Console.WriteLine(Query);
+            Console.WriteLine("Wątek nr " + i + " zakonczył dzialanie!");
+            iloscThreadow += 1;
+            Console.WriteLine("ilosc threadow: " + iloscThreadow);
+            Console.WriteLine("length : " + OdpowiedzMultiThreadu.Count);
+
+        }
+
+
+
     }
 }
