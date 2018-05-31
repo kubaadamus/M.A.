@@ -18,11 +18,10 @@ namespace M_Andrzejkowicz_v1
 {
     public partial class Form1 : Form
     {
+        //======================================Z M I E N N E  G L O B A L N E====================================//
         string ipAddress;
         string[] connections_array;
         List<List<string>> TablicaRzeczy = new List<List<string>>();
-        List<string> Wiersz = new List<string>();
-        Boolean dodajWiersz = true;
         String WatchStatus = "LISTENING";
         String DefaultGetaway = "";
         Process Process = new System.Diagnostics.Process();
@@ -30,9 +29,13 @@ namespace M_Andrzejkowicz_v1
         String SSID = ""; // SSID WIFI
         String SZYFROWANIE = ""; //SZYFROWANIE
         PasswordStrength SprawdzaczSilyHasla = new PasswordStrength();
-
-        static System.Windows.Forms.Timer myTimer = new System.Windows.Forms.Timer();
-
+        List<List<string>> ARPA = new List<List<string>>();
+        string[] TabelaARPA_Początkowa;
+        string[] TabelaARPA;
+        Boolean pingujpodsiec_continue = true;
+        ProgressReport progressReport = new ProgressReport();
+        int IloscPodlaczonychUrzadzen = 0;
+        //====================================== U R U C H O M I E N I E  FORM1====================//
         public Form1()
         {
             InitializeComponent();
@@ -44,8 +47,10 @@ namespace M_Andrzejkowicz_v1
             myTimer.Start();
 
 
-        }
 
+        }
+        //====================================== E V E N T Y  T I M E R A =========================//
+        static System.Windows.Forms.Timer myTimer = new System.Windows.Forms.Timer();
         private void TimerEventProcessor(Object myObject, EventArgs myEventArgs)
         {
             
@@ -61,14 +66,25 @@ namespace M_Andrzejkowicz_v1
             {
                 Console.WriteLine("Pingowanie Default Gatewaya w porządku :3");
                 IntervalPingTextbox.Text = "Pingowanie "+DefaultGetaway+" OK \r\n " + DateTime.Now;
-                log_textbox.AppendText("================================\r\n");
-                log_textbox.AppendText("Pingowanie " + DefaultGetaway + " OK \r\n " + DateTime.Now +"\r\n");
-                log_textbox.AppendText("================================\r\n");
                 AlarmBox.BackColor = Color.Green;
             }
 
-        }
+            if(progressReport.sprawdzArpa==true)  // Funkcja wywolywana po zakonczeniu pingowania podsieci
+            {
+                Console.WriteLine("Siec została spingowana pomyślnie. stan arp -a to:");
+                log_textbox.AppendText("Siec została spingowana pomyślnie. stan arp -a to:");
+                string[] arp = SprawdzArpA();
+                foreach(string a in arp)
+                {
+                    Console.WriteLine(a + "\r\n");
+                    log_textbox.AppendText(a+"\r\n");
+                }
 
+                progressReport.sprawdzArpa = false;
+                UruchomPingowaniePodsieci();
+            }
+        }
+        //====================================== Z A P Y T A N I A  D O  C M D =========================//
         private string CmdQuery(string FileName, string Arguments = "")
         {
 
@@ -88,7 +104,7 @@ namespace M_Andrzejkowicz_v1
                 output = output.Replace("  ", " ");
             }
             return output;
-        } // Funkcja wywołuje jakąś rzecz w CMD i zwraca string z CMD
+        }
         private void CmdQueryAdmin(string Argument)
         {
             var proc1 = new ProcessStartInfo();
@@ -104,82 +120,30 @@ namespace M_Andrzejkowicz_v1
             Process.Start(proc1);
             Console.WriteLine("Wykonano zadanie admin CmdQueryAdmin: "+ Argument);
         }
-        private void skanuj_button_Click(string ipAddress)
+        string ZnajdzLinijke(string input, string StartString)
         {
+            String output = "";
 
-            string strOutput = CmdQuery("netstat", "-ano");
-            
-
-
-            //Console.WriteLine("StrOutput" + strOutput);
-            //log_textbox.Text = strOutput;
-
-            Wiersz.Clear();
-            TablicaRzeczy.Clear();
-            dodajWiersz = true;
-
-            Char[] delimiter = {' ','.',':'};
-            String[] substrings = strOutput.Split(delimiter);
-
-            for(int i=0; i<substrings.Length; i++)
+            if (input.IndexOf(StartString) >= 0)
             {
-                if(substrings[i].IndexOf("\r\n")>0)
-                {
-                    substrings[i] = substrings[i].Replace("\r\n\r\n", "|");
-                    substrings[i] = substrings[i].Replace("\r\n", "|");
-                }
-                else
-                {
-                    substrings[i] = substrings[i].Replace("\r\n\r\n", "");
-                    substrings[i] = substrings[i].Replace("\r\n", "");
-                }
+                output = input.Remove(0, input.IndexOf(StartString));
 
+                output = output.Remove(output.IndexOf("\n"), output.Length - output.IndexOf("\n"));
+
+                output = output.Replace("\n", "");
+                output = output.Replace("\r", "");
+                output = output.Replace(" ", "");
+            }
+            else
+            {
+                log_textbox.AppendText("Nie odnaleziono " + input);
             }
 
 
 
-            foreach (var substring in substrings)
-            {
-                // SPRAWDZANIE CZY W JAKIMŚ WIERSZU SĄ JAKIEŚ RZECZY!
-                Wiersz.Add(substring.Replace("|",""));
-                if(substring.IndexOf("[") >= 0 || substring.IndexOf("*") >= 0 || substring.IndexOf("Active") >= 0 || substring.IndexOf("Proto") >= 0)
-                {
-                    dodajWiersz = false;
-                }
-                if(substring.IndexOf("|")>=0)
-                {
-                    if(dodajWiersz)
-                    {
-                        TablicaRzeczy.Add(new List<string>(Wiersz));
-                    }
-                    Wiersz.Clear();
-                    dodajWiersz = true;
-                }
-            }
-            Console.WriteLine("ITERUJEMY!");
-            //Iterujemy poprzez listę list
-            int index = 0;
-            foreach ( List<string> y in TablicaRzeczy)
-            {
-                ListViewItem lvi = new ListViewItem(index.ToString());
-                index++;
-                foreach(string x in y)
-                {
-                    Console.Write(""+x+"");
-                    lvi.SubItems.Add(x);
-                }
-                LISTA.Items.Add(lvi);
-            }
-
-
-            Console.WriteLine("lolz");
-
-
-            //int matches = Regex.Matches(strOutput, "0.0.0.0").Count;
-            //Console.WriteLine("{0} occurrences", matches);
-            //Console.WriteLine("Podsłuchuje cie " + matches + " koleszków");
-
+            return output;
         }
+        //====================================== N E T W O R K I N G =========================//
         static string NetworkGateway()
         {
             string ip = null;
@@ -198,18 +162,6 @@ namespace M_Andrzejkowicz_v1
             Console.WriteLine("wypisuje ip");
             Console.WriteLine(ip);
             return ip;
-        }
-        private void radioButton1_CheckedChanged(object sender, EventArgs e)
-        {
-            WatchStatus = "LISTENING";
-        }
-        private void radioButton2_CheckedChanged(object sender, EventArgs e)
-        {
-            WatchStatus = "ESTABLISHED";
-        }
-        private void radioButton3_CheckedChanged(object sender, EventArgs e)
-        {
-            WatchStatus = "CLOSE_WAIT";
         }
         private void SprawdzPodsluchy()
         {
@@ -247,31 +199,27 @@ namespace M_Andrzejkowicz_v1
 
             }
         }
-        private async void skanuj_button_Click(object sender, EventArgs e)
+        private string[] SprawdzArpA()
         {
-            podsluch_alert.Text = "CZYSTO :3";
-            LISTA.Items.Clear();
-            skanuj_button_Click(ipAddress);
-            SprawdzPodsluchy();
-            SkanujPodsiec();
-            CmdQueryAdmin("arp -d");
+            string query = CmdQuery("arp", " -a");
+            String[] Output;
+
+            query = query.Replace("\r\n", "|");
+            query = query.Replace("\n", "|");
+            Char[] delimiter = { '|'};
+            Output = query.Split(delimiter);
 
 
-
-
-
-
+            return Output;
+            
         }
-
-
-
         private Task ProcessData(IProgress<ProgressReport> progress)
         {
-            var progressReport = new ProgressReport();
+            
             return Task.Run(() =>
             {
 
-                for (int i = 0; i < hScrollBar1.Value+2; i++)
+                for (int i = PingZakres_start.Value; i < hScrollBar1.Value+2; i++)
                 {
                     string IpAddress = DefaultGetaway;
                     String Query = (CmdQuery("ping", " 192.168.0." + i + " -n 1"));
@@ -279,56 +227,30 @@ namespace M_Andrzejkowicz_v1
                     progressReport.PercentComplete = i;
                     progressReport.ConsoleOutput = Query;
                     progress.Report(progressReport);
+
+                    if (pingujpodsiec_continue == false)
+                    {
+                        Console.WriteLine("Pingowanie podsieci przerwane!");
+                        progressReport.PercentComplete = 0;
+                        progressReport.ConsoleOutput = "\r\n======================================\r\n " +
+                                                        "Pingowanie podsieci przerwane! " +
+                                                        "\r\n======================================\r\n";
+                        progressReport.sprawdzArpa = true;
+                        return;
+                    }
                 }
                 progressReport.PercentComplete = 0;
                 progressReport.ConsoleOutput = "\r\n======================================\r\n " +
                                                 "Pingowanie podsieci zakończone powodzeniem " +
                                                 "\r\n======================================\r\n";
+                progressReport.sprawdzArpa = true;
+                return;
 
 
 
             });
+
         }
-
-        private async void button1_Click(object sender, EventArgs e)
-        {
-            //URUCHOM THREADA
-            var progress = new Progress<ProgressReport>();
-            progress.ProgressChanged += (o, report) =>
-            {
-
-                progressBar1.Value = report.PercentComplete*100/hScrollBar1.Value;
-                Progress_text_box.Text = report.PercentComplete.ToString();
-                log_textbox.AppendText(report.ConsoleOutput);
-                progressBar1.Update();
-            };
-            await ProcessData(progress);
-        }
-
-        private void hScrollBar1_ValueChanged(object sender, EventArgs e)
-        {
-            zakres_text_box.Text = hScrollBar1.Value.ToString();
-        }
-
-        private void Form1_SizeChanged(object sender, EventArgs e)
-        {
-
-                notifyIcon1.Icon = SystemIcons.Application;
-                notifyIcon1.BalloonTipText = "Aplikacja zminimalizowana :3";
-                notifyIcon1.ShowBalloonTip(1000);
-                this.ShowInTaskbar = false;
-                notifyIcon1.Visible = true;
-
-            
-        }
-
-        private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            this.WindowState = FormWindowState.Normal;
-            this.ShowInTaskbar = true;
-            notifyIcon1.Visible = false;
-        }
-
         private void SprawdzNazweWifi()
         {
             SSID = CmdQuery("Netsh", " WLAN show interfaces");
@@ -354,7 +276,60 @@ namespace M_Andrzejkowicz_v1
             HasloWifi.Text = PASSWORD;
             twojehaslo.Visible = true;
         }
+        private void SprawdzanieSilyHasla()
+        {
+            log_textbox.AppendText("\r\n ======================================\r\n"+SprawdzaczSilyHasla.CheckStrength(SSID, PASSWORD)+"\r\n ======================================\r\n");
+        }
+        //======================================E V E N T Y  U I====================================//
+        private void button5_Click(object sender, EventArgs e)
+        {
+            string[] arp = SprawdzArpA();
+            foreach(string a in arp)
+            {
+                Console.WriteLine(a);
+                log_textbox.AppendText(a);
+            }
 
+        }
+        private void button6_Click(object sender, EventArgs e)
+        {
+            CmdQueryAdmin("arp -d");
+        }
+        private void button7_Click(object sender, EventArgs e)
+        {
+            pingujpodsiec_continue = false;
+        }
+        private void PingZakres_start_ValueChanged(object sender, EventArgs e)
+        {
+            ping_zarkesSTART.Text = PingZakres_start.Value.ToString();
+
+            if (PingZakres_start.Value > hScrollBar1.Value)
+            {
+                hScrollBar1.Value = PingZakres_start.Value;
+            }
+        }
+        private void ping_zarkesSTART_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                PingZakres_start.Value = int.Parse(ping_zarkesSTART.Text);
+            }
+            catch
+            {
+
+            }
+        }
+        private void zakres_text_box_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                hScrollBar1.Value = int.Parse(zakres_text_box.Text);
+            }
+            catch
+            {
+
+            }
+        }
         private void button2_Click(object sender, EventArgs e)
         {
             SprawdzNazweWifi();
@@ -362,36 +337,158 @@ namespace M_Andrzejkowicz_v1
             SprawdzSzyfrowanieWifi();
             SprawdzanieSilyHasla();
         }
-
-        string ZnajdzLinijke(string input, string StartString)
+        private void button1_Click(object sender, EventArgs e)
         {
-            String output;
-
-            output = input.Remove(0, input.IndexOf(StartString));
-
-            output = output.Remove(output.IndexOf("\n"), output.Length-output.IndexOf("\n"));
-
-            output = output.Replace("\n", "");
-            output = output.Replace("\r", "");
-            output = output.Replace(" ", "");
-
-
-            return output;
+            UruchomPingowaniePodsieci();
         }
+        private void UruchomPingowaniePodsieci()
+        {
 
+            CmdQueryAdmin("arp -d");
+            CmdQueryAdmin("arp -d");
+            CmdQueryAdmin("arp -d");
+            Console.WriteLine("Ustalam stan początkowy - pinguję całą podsieć . . . ");
+            PingujPodsiec();
+        }
+        private async void PingujPodsiec()
+        {
+            pingujpodsiec_continue = true;
+            //URUCHOM THREADA
+            var progress = new Progress<ProgressReport>();
+            progress.ProgressChanged += (o, report) =>
+            {
+
+                progressBar1.Value = report.PercentComplete * 100 / hScrollBar1.Value;
+                Progress_text_box.Text = report.PercentComplete.ToString();
+                if (report.ConsoleOutput.IndexOf("unreachable") <= 0)
+                {
+                    //log_textbox.AppendText("\r\n======================================\r\n" + report.ConsoleOutput + "\r\n ======================================\r\n");
+                }
+                else
+                {
+                }
+
+                progressBar1.Update();
+            };
+            await ProcessData(progress);
+        }
+        private void hScrollBar1_ValueChanged(object sender, EventArgs e)
+        {
+            zakres_text_box.Text = hScrollBar1.Value.ToString();
+            if (PingZakres_start.Value > hScrollBar1.Value)
+            {
+                PingZakres_start.Value = hScrollBar1.Value;
+            }
+        }
+        private void Form1_SizeChanged(object sender, EventArgs e)
+        {
+
+            notifyIcon1.Icon = SystemIcons.Application;
+            notifyIcon1.BalloonTipText = "Aplikacja zminimalizowana :3";
+            notifyIcon1.ShowBalloonTip(1000);
+            this.ShowInTaskbar = false;
+            notifyIcon1.Visible = true;
+
+
+        }
+        private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            this.WindowState = FormWindowState.Normal;
+            this.ShowInTaskbar = true;
+            notifyIcon1.Visible = false;
+        }
+        private async void skanuj_button_Click(object sender, EventArgs e)
+        {
+            podsluch_alert.Text = "CZYSTO :3";
+            LISTA.Items.Clear();
+            skanuj_button_Click(ipAddress);
+            SprawdzPodsluchy();
+            SkanujPodsiec();
+            CmdQueryAdmin("arp -d");
+        }
+        private void radioButton1_CheckedChanged(object sender, EventArgs e)
+        {
+            WatchStatus = "LISTENING";
+        }
+        private void radioButton2_CheckedChanged(object sender, EventArgs e)
+        {
+            WatchStatus = "ESTABLISHED";
+        }
+        private void radioButton3_CheckedChanged(object sender, EventArgs e)
+        {
+            WatchStatus = "CLOSE_WAIT";
+        }
+        private void skanuj_button_Click(string ipAddress)
+        {
+            string strOutput = CmdQuery("netstat", "-ano");
+
+
+            Boolean dodajWiersz = true;
+            List<string> Wiersz = new List<string>();
+            Wiersz.Clear();
+            TablicaRzeczy.Clear();
+            dodajWiersz = true;
+
+            Char[] delimiter = { ' ', '.', ':' };
+            String[] substrings = strOutput.Split(delimiter);
+
+            for (int i = 0; i < substrings.Length; i++)
+            {
+                if (substrings[i].IndexOf("\r\n") > 0)
+                {
+                    substrings[i] = substrings[i].Replace("\r\n\r\n", "|");
+                    substrings[i] = substrings[i].Replace("\r\n", "|");
+                }
+                else
+                {
+                    substrings[i] = substrings[i].Replace("\r\n\r\n", "");
+                    substrings[i] = substrings[i].Replace("\r\n", "");
+                }
+
+            }
+
+
+
+            foreach (var substring in substrings)
+            {
+                // SPRAWDZANIE CZY W JAKIMŚ WIERSZU SĄ JAKIEŚ RZECZY!
+                Wiersz.Add(substring.Replace("|", ""));
+                if (substring.IndexOf("[") >= 0 || substring.IndexOf("*") >= 0 || substring.IndexOf("Active") >= 0 || substring.IndexOf("Proto") >= 0)
+                {
+                    dodajWiersz = false;
+                }
+                if (substring.IndexOf("|") >= 0)
+                {
+                    if (dodajWiersz)
+                    {
+                        TablicaRzeczy.Add(new List<string>(Wiersz));
+                    }
+                    Wiersz.Clear();
+                    dodajWiersz = true;
+                }
+            }
+            Console.WriteLine("ITERUJEMY!");
+            //Iterujemy poprzez listę list
+            int index = 0;
+            foreach (List<string> y in TablicaRzeczy)
+            {
+                ListViewItem lvi = new ListViewItem(index.ToString());
+                index++;
+                foreach (string x in y)
+                {
+                    Console.Write("" + x + "");
+                    lvi.SubItems.Add(x);
+                }
+                LISTA.Items.Add(lvi);
+            }
+        }
         private void button3_Click(object sender, EventArgs e)
         {
             HasloWifi.UseSystemPasswordChar = false;
         }
-
         private void button4_Click(object sender, EventArgs e)
         {
             HasloWifi.UseSystemPasswordChar = true;
-        }
-
-        private void SprawdzanieSilyHasla()
-        {
-            log_textbox.AppendText("\r\n ======================================\r\n"+SprawdzaczSilyHasla.CheckStrength(SSID, PASSWORD)+"\r\n ======================================\r\n");
         }
     }
 }

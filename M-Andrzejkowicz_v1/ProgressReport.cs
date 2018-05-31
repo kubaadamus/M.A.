@@ -10,5 +10,6 @@ namespace M_Andrzejkowicz_v1
     {
         public int PercentComplete { get; set; }
         public string ConsoleOutput { get; set; }
+        public Boolean sprawdzArpa = false;
     }
 }

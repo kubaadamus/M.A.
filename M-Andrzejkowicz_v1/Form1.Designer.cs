@@ -75,6 +75,13 @@
             this.label7 = new System.Windows.Forms.Label();
             this.button3 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
+            this.button5 = new System.Windows.Forms.Button();
+            this.button6 = new System.Windows.Forms.Button();
+            this.button7 = new System.Windows.Forms.Button();
+            this.ping_zarkesSTART = new System.Windows.Forms.TextBox();
+            this.PingZakres_start = new System.Windows.Forms.HScrollBar();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.AlarmBox)).BeginInit();
@@ -284,7 +291,7 @@
             // 
             // progressBar1
             // 
-            this.progressBar1.Location = new System.Drawing.Point(702, 334);
+            this.progressBar1.Location = new System.Drawing.Point(702, 368);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(107, 22);
             this.progressBar1.TabIndex = 12;
@@ -292,7 +299,7 @@
             // Progress_text_box
             // 
             this.Progress_text_box.BackColor = System.Drawing.Color.White;
-            this.Progress_text_box.Location = new System.Drawing.Point(812, 334);
+            this.Progress_text_box.Location = new System.Drawing.Point(812, 368);
             this.Progress_text_box.Name = "Progress_text_box";
             this.Progress_text_box.Size = new System.Drawing.Size(47, 20);
             this.Progress_text_box.TabIndex = 13;
@@ -302,7 +309,7 @@
             this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.button1.Location = new System.Drawing.Point(702, 204);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(157, 43);
+            this.button1.Size = new System.Drawing.Size(75, 43);
             this.button1.TabIndex = 14;
             this.button1.Text = "PINGUJ PODSIEĆ";
             this.button1.UseVisualStyleBackColor = true;
@@ -311,12 +318,12 @@
             // hScrollBar1
             // 
             this.hScrollBar1.LargeChange = 1;
-            this.hScrollBar1.Location = new System.Drawing.Point(703, 270);
+            this.hScrollBar1.Location = new System.Drawing.Point(703, 326);
             this.hScrollBar1.Maximum = 255;
             this.hScrollBar1.Name = "hScrollBar1";
             this.hScrollBar1.Size = new System.Drawing.Size(106, 17);
             this.hScrollBar1.TabIndex = 15;
-            this.hScrollBar1.Value = 255;
+            this.hScrollBar1.Value = 3;
             this.hScrollBar1.ValueChanged += new System.EventHandler(this.hScrollBar1_ValueChanged);
             // 
             // label3
@@ -330,16 +337,17 @@
             // 
             // zakres_text_box
             // 
-            this.zakres_text_box.Location = new System.Drawing.Point(813, 270);
+            this.zakres_text_box.Location = new System.Drawing.Point(813, 326);
             this.zakres_text_box.Name = "zakres_text_box";
             this.zakres_text_box.Size = new System.Drawing.Size(46, 20);
             this.zakres_text_box.TabIndex = 17;
-            this.zakres_text_box.Text = "255";
+            this.zakres_text_box.Text = "3";
+            this.zakres_text_box.TextChanged += new System.EventHandler(this.zakres_text_box_TextChanged);
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(727, 318);
+            this.label4.Location = new System.Drawing.Point(727, 352);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(108, 13);
             this.label4.TabIndex = 18;
@@ -457,11 +465,85 @@
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
+            // button5
+            // 
+            this.button5.Location = new System.Drawing.Point(784, 767);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(75, 23);
+            this.button5.TabIndex = 31;
+            this.button5.Text = "arp -a";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
+            // 
+            // button6
+            // 
+            this.button6.Location = new System.Drawing.Point(702, 767);
+            this.button6.Name = "button6";
+            this.button6.Size = new System.Drawing.Size(75, 23);
+            this.button6.TabIndex = 32;
+            this.button6.Text = "arp -d";
+            this.button6.UseVisualStyleBackColor = true;
+            this.button6.Click += new System.EventHandler(this.button6_Click);
+            // 
+            // button7
+            // 
+            this.button7.Location = new System.Drawing.Point(782, 204);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(75, 43);
+            this.button7.TabIndex = 33;
+            this.button7.Text = "STOP";
+            this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
+            // 
+            // ping_zarkesSTART
+            // 
+            this.ping_zarkesSTART.Location = new System.Drawing.Point(812, 286);
+            this.ping_zarkesSTART.Name = "ping_zarkesSTART";
+            this.ping_zarkesSTART.Size = new System.Drawing.Size(46, 20);
+            this.ping_zarkesSTART.TabIndex = 35;
+            this.ping_zarkesSTART.Text = "0";
+            this.ping_zarkesSTART.TextChanged += new System.EventHandler(this.ping_zarkesSTART_TextChanged);
+            // 
+            // PingZakres_start
+            // 
+            this.PingZakres_start.LargeChange = 1;
+            this.PingZakres_start.Location = new System.Drawing.Point(702, 286);
+            this.PingZakres_start.Maximum = 255;
+            this.PingZakres_start.Name = "PingZakres_start";
+            this.PingZakres_start.Size = new System.Drawing.Size(106, 17);
+            this.PingZakres_start.TabIndex = 34;
+            this.PingZakres_start.ValueChanged += new System.EventHandler(this.PingZakres_start_ValueChanged);
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(826, 270);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(19, 13);
+            this.label8.TabIndex = 36;
+            this.label8.Text = "od";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(826, 310);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(19, 13);
+            this.label9.TabIndex = 37;
+            this.label9.Text = "do";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1352, 842);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.label8);
+            this.Controls.Add(this.ping_zarkesSTART);
+            this.Controls.Add(this.PingZakres_start);
+            this.Controls.Add(this.button7);
+            this.Controls.Add(this.button6);
+            this.Controls.Add(this.button5);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.label7);
@@ -552,6 +634,13 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.Button button6;
+        private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.TextBox ping_zarkesSTART;
+        private System.Windows.Forms.HScrollBar PingZakres_start;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label9;
     }
 }
 
