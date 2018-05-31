@@ -82,6 +82,7 @@
             this.PingZakres_start = new System.Windows.Forms.HScrollBar();
             this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
+            this.button8 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.AlarmBox)).BeginInit();
@@ -532,11 +533,22 @@
             this.label9.TabIndex = 37;
             this.label9.Text = "do";
             // 
+            // button8
+            // 
+            this.button8.Location = new System.Drawing.Point(745, -1);
+            this.button8.Name = "button8";
+            this.button8.Size = new System.Drawing.Size(75, 23);
+            this.button8.TabIndex = 38;
+            this.button8.Text = "button8";
+            this.button8.UseVisualStyleBackColor = true;
+            this.button8.Click += new System.EventHandler(this.button8_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1352, 842);
+            this.Controls.Add(this.button8);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.ping_zarkesSTART);
@@ -641,6 +653,7 @@
         private System.Windows.Forms.HScrollBar PingZakres_start;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Button button8;
     }
 }
 

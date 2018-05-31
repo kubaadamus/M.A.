@@ -35,6 +35,15 @@ namespace M_Andrzejkowicz_v1
         Boolean pingujpodsiec_continue = true;
         ProgressReport progressReport = new ProgressReport();
         int IloscPodlaczonychUrzadzen = 0;
+
+        List<string> OdpowiedzMultiThreadu = new List<string>();
+
+        //THREADY
+        Thread th1;
+        Thread th2;
+        Thread th3;
+
+
         //====================================== U R U C H O M I E N I E  FORM1====================//
         public Form1()
         {
@@ -42,9 +51,9 @@ namespace M_Andrzejkowicz_v1
             ipAddress = NetworkGateway();
             SkanujPodsiec();
 
-            myTimer.Tick += new EventHandler(TimerEventProcessor);
-            myTimer.Interval = 5000;
-            myTimer.Start();
+           // myTimer.Tick += new EventHandler(TimerEventProcessor);
+           // myTimer.Interval = 5000;
+           // myTimer.Start();
 
 
 
@@ -81,7 +90,6 @@ namespace M_Andrzejkowicz_v1
                 }
 
                 progressReport.sprawdzArpa = false;
-                UruchomPingowaniePodsieci();
             }
         }
         //====================================== Z A P Y T A N I A  D O  C M D =========================//
@@ -213,18 +221,17 @@ namespace M_Andrzejkowicz_v1
             return Output;
             
         }
-        private Task ProcessData(IProgress<ProgressReport> progress)
+        private Task ProcessData(IProgress<ProgressReport> progress,int ostatnia_liczba)
         {
             
             return Task.Run(() =>
             {
 
-                for (int i = PingZakres_start.Value; i < hScrollBar1.Value+2; i++)
-                {
+
                     string IpAddress = DefaultGetaway;
-                    String Query = (CmdQuery("ping", " 192.168.0." + i + " -n 1"));
+                    String Query = (CmdQuery("ping", " 192.168.0." + ostatnia_liczba + " -n 1"));
                     Console.WriteLine(Query);
-                    progressReport.PercentComplete = i;
+                    //progressReport.PercentComplete = i;
                     progressReport.ConsoleOutput = Query;
                     progress.Report(progressReport);
 
@@ -238,7 +245,7 @@ namespace M_Andrzejkowicz_v1
                         progressReport.sprawdzArpa = true;
                         return;
                     }
-                }
+
                 progressReport.PercentComplete = 0;
                 progressReport.ConsoleOutput = "\r\n======================================\r\n " +
                                                 "Pingowanie podsieci zakończone powodzeniem " +
@@ -339,8 +346,28 @@ namespace M_Andrzejkowicz_v1
         }
         private void button1_Click(object sender, EventArgs e)
         {
-            UruchomPingowaniePodsieci();
+            progressReport.PublicznaLista.Clear();
+            for(int i=0; i<250; i++)
+            {
+                th1 = new Thread(() => ThreadTest(i));
+                Thread.Sleep(10);
+                th1.Start();
+            }
+
+
         }
+        public void ThreadTest(int i)
+        {
+
+            String Query = (CmdQuery("ping", " 192.168.0." + i + " -n 1"));
+            OdpowiedzMultiThreadu.Add(Query);
+            Console.WriteLine("Wątek nr " + i + " zakonczył dzialanie!");
+            Console.WriteLine(Query);
+
+            progressReport.PublicznaLista.Add(Query);
+        }
+
+
         private void UruchomPingowaniePodsieci()
         {
 
@@ -353,24 +380,29 @@ namespace M_Andrzejkowicz_v1
         private async void PingujPodsiec()
         {
             pingujpodsiec_continue = true;
-            //URUCHOM THREADA
-            var progress = new Progress<ProgressReport>();
-            progress.ProgressChanged += (o, report) =>
+            //URUCHOM THREADY
+            for(int i=0; i<255; i++)
             {
-
-                progressBar1.Value = report.PercentComplete * 100 / hScrollBar1.Value;
-                Progress_text_box.Text = report.PercentComplete.ToString();
-                if (report.ConsoleOutput.IndexOf("unreachable") <= 0)
+                var progress = new Progress<ProgressReport>();
+                progress.ProgressChanged += (o, report) =>
                 {
-                    //log_textbox.AppendText("\r\n======================================\r\n" + report.ConsoleOutput + "\r\n ======================================\r\n");
-                }
-                else
-                {
-                }
 
-                progressBar1.Update();
-            };
-            await ProcessData(progress);
+                    progressBar1.Value = report.PercentComplete * 100 / hScrollBar1.Value;
+                    Progress_text_box.Text = report.PercentComplete.ToString();
+                    if (report.ConsoleOutput.IndexOf("unreachable") <= 0)
+                    {
+                        //log_textbox.AppendText("\r\n======================================\r\n" + report.ConsoleOutput + "\r\n ======================================\r\n");
+                    }
+                    else
+                    {
+                    }
+
+                    progressBar1.Update();
+                };
+                await ProcessData(progress,i);
+            }
+
+
         }
         private void hScrollBar1_ValueChanged(object sender, EventArgs e)
         {
@@ -489,6 +521,19 @@ namespace M_Andrzejkowicz_v1
         private void button4_Click(object sender, EventArgs e)
         {
             HasloWifi.UseSystemPasswordChar = true;
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            log_textbox.Clear();
+            foreach (string a in progressReport.PublicznaLista)
+            {
+                if(a.IndexOf("unreachable")<=0)
+                {
+                    log_textbox.AppendText(a + "\r\n===================================================\r\n");
+                }
+                
+            }
         }
     }
 }
