@@ -110,10 +110,13 @@ namespace M_Andrzejkowicz_v1
 
                 if(IloscPodlaczonychUrzadzen != arp.Length)
                 {
+
+
                     IloscPodlaczonychUrzadzen = arp.Length;
                     if(powiadomienia.Checked)
                     {
-                        notifyIcon1.ShowBalloonTip(1000, "uwaga uwaga", "ilosc :" + IloscPodlaczonychUrzadzen, ToolTipIcon.Info);
+                        notifyIcon1.ShowBalloonTip(1000, "Uwaga","Ilość podłączonych urządzeń uległa zmianie!", ToolTipIcon.Info);
+                        log_textbox.AppendText("\r\n Uwaga! Ilość podłączonych urządzeń uległa zmianie! " + DateTime.Now + "\r\n");
                     }
                     
                    
@@ -353,10 +356,12 @@ namespace M_Andrzejkowicz_v1
             if(punktacja<220)
             {
                 log_textbox.AppendText("\r\n HASŁO WIFI JEST SŁABE! Jego siła wynosi: " + punktacja + "\r\n");
+                HasloWifi.BackColor = Color.DarkRed;
             }
             else if(punktacja>220 && punktacja<260)
             {
                 log_textbox.AppendText("\r\n HASŁO WIFI JEST ŚREDNIEJ MOCY! Jego siła wynosi: " + punktacja + "\r\n");
+                HasloWifi.BackColor = Color.DarkOrange;
             }
             else if(punktacja>=260)
             {
@@ -412,7 +417,7 @@ namespace M_Andrzejkowicz_v1
         private void Form1_SizeChanged(object sender, EventArgs e)
         {
             notifyIcon1.Icon = SystemIcons.Application;
-            notifyIcon1.BalloonTipText = "Aplikacja zminimalizowana :3";
+            notifyIcon1.BalloonTipText = "Aplikacja działa w tle";
             notifyIcon1.ShowBalloonTip(1000);
             this.ShowInTaskbar = false;
         }
@@ -577,6 +582,11 @@ namespace M_Andrzejkowicz_v1
         }
 
         private void IntervalPingTextbox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
         {
 
         }

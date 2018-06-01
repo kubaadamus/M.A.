@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.log_textbox = new System.Windows.Forms.TextBox();
             this.log_label = new System.Windows.Forms.Label();
             this.LISTA = new System.Windows.Forms.ListView();
@@ -48,8 +49,6 @@
             this.PID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.label5 = new System.Windows.Forms.Label();
             this.IntervalPingTextbox = new System.Windows.Forms.TextBox();
@@ -63,8 +62,8 @@
             this.button3 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
             this.powiadomienia = new System.Windows.Forms.CheckBox();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.SuspendLayout();
             // 
             // log_textbox
@@ -82,7 +81,7 @@
             // log_label
             // 
             this.log_label.AutoSize = true;
-            this.log_label.Location = new System.Drawing.Point(251, 11);
+            this.log_label.Location = new System.Drawing.Point(397, 3);
             this.log_label.Name = "log_label";
             this.log_label.Size = new System.Drawing.Size(29, 13);
             this.log_label.TabIndex = 1;
@@ -205,24 +204,6 @@
             this.label2.TabIndex = 4;
             this.label2.Text = "Foreign Address";
             // 
-            // pictureBox1
-            // 
-            this.pictureBox1.BackColor = System.Drawing.Color.Black;
-            this.pictureBox1.Location = new System.Drawing.Point(978, 3);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(180, 32);
-            this.pictureBox1.TabIndex = 6;
-            this.pictureBox1.TabStop = false;
-            // 
-            // pictureBox2
-            // 
-            this.pictureBox2.BackColor = System.Drawing.Color.Black;
-            this.pictureBox2.Location = new System.Drawing.Point(779, 3);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(193, 32);
-            this.pictureBox2.TabIndex = 7;
-            this.pictureBox2.TabStop = false;
-            // 
             // notifyIcon1
             // 
             this.notifyIcon1.Text = "notifyIcon1";
@@ -241,7 +222,7 @@
             // 
             // IntervalPingTextbox
             // 
-            this.IntervalPingTextbox.Location = new System.Drawing.Point(12, 56);
+            this.IntervalPingTextbox.Location = new System.Drawing.Point(12, 58);
             this.IntervalPingTextbox.Multiline = true;
             this.IntervalPingTextbox.Name = "IntervalPingTextbox";
             this.IntervalPingTextbox.ReadOnly = true;
@@ -251,7 +232,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(12, 126);
+            this.button2.Location = new System.Drawing.Point(12, 133);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(155, 23);
             this.button2.TabIndex = 22;
@@ -261,7 +242,7 @@
             // 
             // NazwaWifi
             // 
-            this.NazwaWifi.Location = new System.Drawing.Point(12, 168);
+            this.NazwaWifi.Location = new System.Drawing.Point(12, 175);
             this.NazwaWifi.Name = "NazwaWifi";
             this.NazwaWifi.ReadOnly = true;
             this.NazwaWifi.Size = new System.Drawing.Size(155, 20);
@@ -269,7 +250,7 @@
             // 
             // HasloWifi
             // 
-            this.HasloWifi.Location = new System.Drawing.Point(12, 207);
+            this.HasloWifi.Location = new System.Drawing.Point(12, 214);
             this.HasloWifi.Name = "HasloWifi";
             this.HasloWifi.ReadOnly = true;
             this.HasloWifi.Size = new System.Drawing.Size(155, 20);
@@ -279,7 +260,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(52, 152);
+            this.label6.Location = new System.Drawing.Point(52, 159);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(64, 13);
             this.label6.TabIndex = 25;
@@ -288,7 +269,7 @@
             // twojehaslo
             // 
             this.twojehaslo.AutoSize = true;
-            this.twojehaslo.Location = new System.Drawing.Point(69, 191);
+            this.twojehaslo.Location = new System.Drawing.Point(69, 198);
             this.twojehaslo.Name = "twojehaslo";
             this.twojehaslo.Size = new System.Drawing.Size(34, 13);
             this.twojehaslo.TabIndex = 26;
@@ -297,7 +278,7 @@
             // 
             // szyfrowanie
             // 
-            this.szyfrowanie.Location = new System.Drawing.Point(12, 283);
+            this.szyfrowanie.Location = new System.Drawing.Point(12, 297);
             this.szyfrowanie.Name = "szyfrowanie";
             this.szyfrowanie.ReadOnly = true;
             this.szyfrowanie.Size = new System.Drawing.Size(155, 20);
@@ -306,7 +287,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(54, 267);
+            this.label7.Location = new System.Drawing.Point(54, 281);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(62, 13);
             this.label7.TabIndex = 28;
@@ -314,7 +295,7 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(92, 233);
+            this.button3.Location = new System.Drawing.Point(92, 240);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(75, 23);
             this.button3.TabIndex = 29;
@@ -324,7 +305,7 @@
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(12, 233);
+            this.button4.Location = new System.Drawing.Point(12, 240);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(75, 23);
             this.button4.TabIndex = 30;
@@ -335,12 +316,25 @@
             // powiadomienia
             // 
             this.powiadomienia.AutoSize = true;
-            this.powiadomienia.Location = new System.Drawing.Point(12, 324);
+            this.powiadomienia.Checked = true;
+            this.powiadomienia.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.powiadomienia.Location = new System.Drawing.Point(12, 350);
             this.powiadomienia.Name = "powiadomienia";
             this.powiadomienia.Size = new System.Drawing.Size(149, 17);
             this.powiadomienia.TabIndex = 31;
             this.powiadomienia.Text = "Wyświetlaj powiadomienia";
             this.powiadomienia.UseVisualStyleBackColor = true;
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.BackgroundImage = global::M_Andrzejkowicz_v1.Properties.Resources.key_background2;
+            this.pictureBox1.Location = new System.Drawing.Point(20, 418);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(141, 136);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox1.TabIndex = 32;
+            this.pictureBox1.TabStop = false;
+            this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
             // 
             // Form1
             // 
@@ -348,6 +342,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.ForestGreen;
             this.ClientSize = new System.Drawing.Size(1422, 638);
+            this.Controls.Add(this.log_textbox);
             this.Controls.Add(this.powiadomienia);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.button3);
@@ -364,14 +359,12 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.LISTA);
             this.Controls.Add(this.log_label);
-            this.Controls.Add(this.log_textbox);
             this.Controls.Add(this.pictureBox1);
-            this.Controls.Add(this.pictureBox2);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "Tester";
             this.SizeChanged += new System.EventHandler(this.Form1_SizeChanged);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -398,8 +391,6 @@
         private System.Windows.Forms.ColumnHeader Index;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.NotifyIcon notifyIcon1;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox IntervalPingTextbox;
@@ -413,6 +404,7 @@
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.CheckBox powiadomienia;
+        private System.Windows.Forms.PictureBox pictureBox1;
     }
 }
 
