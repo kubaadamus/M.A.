@@ -309,7 +309,7 @@ namespace M_Andrzejkowicz_v1
         }
         private void SprawdzHasłoWifi()
         {
-            PASSWORD = CmdQuery("netsh", " wlan show profile name=\"Domek\" key=clear");
+            PASSWORD = CmdQuery("netsh", " wlan show profile name="+SSID+" key=clear");
             PASSWORD = ZnajdzLinijke(PASSWORD, "Key Content");
             PASSWORD = PASSWORD.Replace("KeyContent:", "");
             Console.WriteLine(PASSWORD);
