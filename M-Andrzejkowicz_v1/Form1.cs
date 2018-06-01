@@ -32,29 +32,24 @@ namespace M_Andrzejkowicz_v1
         List<List<string>> ARPA = new List<List<string>>();
         string[] TabelaARPA_Początkowa;
         string[] TabelaARPA;
-        Boolean pingujpodsiec_continue = true;
         ProgressReport progressReport = new ProgressReport();
         int IloscPodlaczonychUrzadzen = 0;
         int iloscThreadow = 0;
-
+        int punktacja = 0; // Punktacja mocy hasła wifi
         Boolean sprawdzajThready = false;
-
         List<string> OdpowiedzMultiThreadu = new List<string>();
-
         //THREADY
         Thread th1;
         Thread th2;
-        Thread th3;
-
-
         //====================================== U R U C H O M I E N I E  FORM1====================//
         public Form1()
         {
+            
             InitializeComponent();
             ipAddress = NetworkGateway();
             SkanujPodsiec();
-
-           myTimer.Tick += new EventHandler(TimerEventProcessor);
+            
+            myTimer.Tick += new EventHandler(TimerEventProcessor);
            myTimer.Interval = 5000;
            myTimer.Start();
 
@@ -62,6 +57,10 @@ namespace M_Andrzejkowicz_v1
             CmdQueryAdmin("arp -d");
             log_textbox.AppendText(CmdQuery("arp"," -a"));
             UruchomPingowaniePodsieci();
+
+
+            notifyIcon1.Visible = true;
+
         }
         //====================================== E V E N T Y  T I M E R A =========================//
         static System.Windows.Forms.Timer myTimer = new System.Windows.Forms.Timer();
@@ -74,13 +73,13 @@ namespace M_Andrzejkowicz_v1
                 Console.WriteLine("ALARM! NIE UDAŁO SIE SPINGOWAC!");
                 IntervalPingTextbox.Text = "Pingowanie " + DefaultGetaway + "ZJEBAWSZY! ALARM! \r\n " + DateTime.Now;
                 log_textbox.AppendText("Pingowanie " + DefaultGetaway + "ZJEBAWSZY! ALARM! " + DateTime.Now + "\r\n");
-                AlarmBox.BackColor = Color.Red;
+                IntervalPingTextbox.BackColor = Color.Red;
             }
             else
             {
                 Console.WriteLine("Pingowanie Default Gatewaya w porządku :3");
                 IntervalPingTextbox.Text = "Pingowanie "+DefaultGetaway+" OK \r\n " + DateTime.Now;
-                AlarmBox.BackColor = Color.Green;
+                IntervalPingTextbox.BackColor = Color.Green;
             }
 
             if(progressReport.sprawdzArpa==true)  // Funkcja wywolywana po zakonczeniu pingowania podsieci
@@ -112,8 +111,11 @@ namespace M_Andrzejkowicz_v1
                 if(IloscPodlaczonychUrzadzen != arp.Length)
                 {
                     IloscPodlaczonychUrzadzen = arp.Length;
-                    //MessageBox.Show(IloscPodlaczonychUrzadzen.ToString());
-                    notifyIcon1.ShowBalloonTip(1000, "uwaga uwaga", "ilosc :" + IloscPodlaczonychUrzadzen, ToolTipIcon.Info);
+                    if(powiadomienia.Checked)
+                    {
+                        notifyIcon1.ShowBalloonTip(1000, "uwaga uwaga", "ilosc :" + IloscPodlaczonychUrzadzen, ToolTipIcon.Info);
+                    }
+                    
                    
                 }
 
@@ -122,6 +124,13 @@ namespace M_Andrzejkowicz_v1
                 
 
             }
+
+
+            LISTA.Items.Clear();
+            skanuj_button_Click(ipAddress);
+            SprawdzPodsluchy();
+            SkanujPodsiec();
+
         }
         //====================================== Z A P Y T A N I A  D O  C M D =========================//
         private string CmdQuery(string FileName, string Arguments = "")
@@ -215,8 +224,16 @@ namespace M_Andrzejkowicz_v1
                     if (y[11] == WatchStatus)
                     {
                         Console.WriteLine("PODSŁUCH! na pozycji: " + index);
-                        podsluch_alert.Text = "WYKRYTO PODSŁUCH!";
+                        log_textbox.AppendText("\r\n Wykryto podsłuch ! \r\n");
                         LISTA.Items[index].BackColor = Color.Red;
+                        notifyIcon1.Icon = SystemIcons.Application;
+                        if(powiadomienia.Checked)
+                        {
+                            notifyIcon1.BalloonTipText = "Wykryto podsłuch!";
+                            notifyIcon1.ShowBalloonTip(10);
+                        }
+                        
+                        return;
                     }
                     Console.WriteLine("MAMY NIEZEROWE FOREIGNY!");
                 }
@@ -268,16 +285,6 @@ namespace M_Andrzejkowicz_v1
                     progressReport.ConsoleOutput = Query;
                     progress.Report(progressReport);
 
-                    if (pingujpodsiec_continue == false)
-                    {
-                        Console.WriteLine("Pingowanie podsieci przerwane!");
-                        progressReport.PercentComplete = 0;
-                        progressReport.ConsoleOutput = "\r\n======================================\r\n " +
-                                                        "Pingowanie podsieci przerwane! " +
-                                                        "\r\n======================================\r\n";
-                        progressReport.sprawdzArpa = true;
-                        return;
-                    }
 
                 progressReport.PercentComplete = 0;
                 progressReport.ConsoleOutput = "\r\n======================================\r\n " +
@@ -316,6 +323,46 @@ namespace M_Andrzejkowicz_v1
             HasloWifi.Text = PASSWORD;
             twojehaslo.Visible = true;
         }
+        private void SprawdzMocHasłaWifi()
+        {
+            punktacja = 0;
+            foreach(char a in PASSWORD)
+            {
+                if(Char.IsNumber(a))
+                {
+                    punktacja += 10;
+                }
+                else if(Char.IsLower(a))
+                {
+                    punktacja += 26;
+                }
+                else if (Char.IsUpper(a))
+                {
+                    punktacja += 26;
+                }
+                else if (!Char.IsLetterOrDigit(a))
+                {
+                    punktacja += 33;
+                }
+                else
+                {
+                    punktacja += 66;
+                }
+            }
+
+            if(punktacja<220)
+            {
+                log_textbox.AppendText("\r\n HASŁO WIFI JEST SŁABE! Jego siła wynosi: " + punktacja + "\r\n");
+            }
+            else if(punktacja>220 && punktacja<260)
+            {
+                log_textbox.AppendText("\r\n HASŁO WIFI JEST ŚREDNIEJ MOCY! Jego siła wynosi: " + punktacja + "\r\n");
+            }
+            else if(punktacja>=260)
+            {
+                log_textbox.AppendText("\r\n HASŁO WIFI JEST MOCNE! Jego siła wynosi: " + punktacja + "\r\n");
+            }
+        }
         private void SprawdzanieSilyHasla()
         {
             log_textbox.AppendText("\r\n ======================================\r\n"+SprawdzaczSilyHasla.CheckStrength(SSID, PASSWORD)+"\r\n ======================================\r\n");
@@ -337,38 +384,18 @@ namespace M_Andrzejkowicz_v1
         }
         private void button7_Click(object sender, EventArgs e)
         {
-            pingujpodsiec_continue = false;
         }
         private void PingZakres_start_ValueChanged(object sender, EventArgs e)
         {
-            ping_zarkesSTART.Text = PingZakres_start.Value.ToString();
 
-            if (PingZakres_start.Value > hScrollBar1.Value)
-            {
-                hScrollBar1.Value = PingZakres_start.Value;
-            }
         }
         private void ping_zarkesSTART_TextChanged(object sender, EventArgs e)
         {
-            try
-            {
-                PingZakres_start.Value = int.Parse(ping_zarkesSTART.Text);
-            }
-            catch
-            {
 
-            }
         }
         private void zakres_text_box_TextChanged(object sender, EventArgs e)
         {
-            try
-            {
-                hScrollBar1.Value = int.Parse(zakres_text_box.Text);
-            }
-            catch
-            {
 
-            }
         }
         private void button2_Click(object sender, EventArgs e)
         {
@@ -376,39 +403,28 @@ namespace M_Andrzejkowicz_v1
             SprawdzHasłoWifi();
             SprawdzSzyfrowanieWifi();
             SprawdzanieSilyHasla();
+            SprawdzMocHasłaWifi();
         }
         private void hScrollBar1_ValueChanged(object sender, EventArgs e)
         {
-            zakres_text_box.Text = hScrollBar1.Value.ToString();
-            if (PingZakres_start.Value > hScrollBar1.Value)
-            {
-                PingZakres_start.Value = hScrollBar1.Value;
-            }
+
         }
         private void Form1_SizeChanged(object sender, EventArgs e)
         {
-
             notifyIcon1.Icon = SystemIcons.Application;
             notifyIcon1.BalloonTipText = "Aplikacja zminimalizowana :3";
             notifyIcon1.ShowBalloonTip(1000);
             this.ShowInTaskbar = false;
-            notifyIcon1.Visible = true;
-
-
         }
         private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             this.WindowState = FormWindowState.Normal;
             this.ShowInTaskbar = true;
-            notifyIcon1.Visible = false;
+
         }
         private async void skanuj_button_Click(object sender, EventArgs e)
         {
-            podsluch_alert.Text = "CZYSTO :3";
-            LISTA.Items.Clear();
-            skanuj_button_Click(ipAddress);
-            SprawdzPodsluchy();
-            SkanujPodsiec();
+
             
         }
         private void radioButton1_CheckedChanged(object sender, EventArgs e)
@@ -545,7 +561,24 @@ namespace M_Andrzejkowicz_v1
 
         }
 
+        private void log_textbox_TextChanged(object sender, EventArgs e)
+        {
 
+        }
 
+        private void log_label_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label5_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void IntervalPingTextbox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
