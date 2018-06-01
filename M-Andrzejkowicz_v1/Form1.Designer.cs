@@ -76,7 +76,6 @@
             this.log_textbox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.log_textbox.Size = new System.Drawing.Size(491, 600);
             this.log_textbox.TabIndex = 0;
-            this.log_textbox.TextChanged += new System.EventHandler(this.log_textbox_TextChanged);
             // 
             // log_label
             // 
@@ -86,7 +85,6 @@
             this.log_label.Size = new System.Drawing.Size(29, 13);
             this.log_label.TabIndex = 1;
             this.log_label.Text = "LOG";
-            this.log_label.Click += new System.EventHandler(this.log_label_Click);
             // 
             // LISTA
             // 
@@ -218,7 +216,6 @@
             this.label5.Size = new System.Drawing.Size(112, 26);
             this.label5.TabIndex = 19;
             this.label5.Text = "Okresowe pingowanie\r\n   Default Gateway";
-            this.label5.Click += new System.EventHandler(this.label5_Click);
             // 
             // IntervalPingTextbox
             // 
@@ -228,7 +225,6 @@
             this.IntervalPingTextbox.ReadOnly = true;
             this.IntervalPingTextbox.Size = new System.Drawing.Size(155, 48);
             this.IntervalPingTextbox.TabIndex = 20;
-            this.IntervalPingTextbox.TextChanged += new System.EventHandler(this.IntervalPingTextbox_TextChanged);
             // 
             // button2
             // 
@@ -328,13 +324,12 @@
             // pictureBox1
             // 
             this.pictureBox1.BackgroundImage = global::M_Andrzejkowicz_v1.Properties.Resources.key_background2;
-            this.pictureBox1.Location = new System.Drawing.Point(20, 418);
+            this.pictureBox1.Location = new System.Drawing.Point(28, 400);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(141, 136);
+            this.pictureBox1.Size = new System.Drawing.Size(139, 138);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 32;
             this.pictureBox1.TabStop = false;
-            this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
             // 
             // Form1
             // 

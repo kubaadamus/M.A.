@@ -19,54 +19,44 @@ namespace M_Andrzejkowicz_v1
     public partial class Form1 : Form
     {
         //======================================Z M I E N N E  G L O B A L N E====================================//
-        string ipAddress;
-        string[] connections_array;
-        List<List<string>> TablicaRzeczy = new List<List<string>>();
-        String WatchStatus = "LISTENING";
-        String DefaultGetaway = "";
-        Process Process = new System.Diagnostics.Process();
-        String PASSWORD=""; // HASŁO DO SIECI WIFI
-        String SSID = ""; // SSID WIFI
-        String SZYFROWANIE = ""; //SZYFROWANIE
-        PasswordStrength SprawdzaczSilyHasla = new PasswordStrength();
-        List<List<string>> ARPA = new List<List<string>>();
-        string[] TabelaARPA_Początkowa;
-        string[] TabelaARPA;
-        ProgressReport progressReport = new ProgressReport();
-        int IloscPodlaczonychUrzadzen = 0;
-        int iloscThreadow = 0;
-        int punktacja = 0; // Punktacja mocy hasła wifi
-        Boolean sprawdzajThready = false;
-        List<string> OdpowiedzMultiThreadu = new List<string>();
+        string ipAddress;                                                       // Zmienna która będzie trzymać Twoj numer IP
+        List<List<string>> TablicaRzeczy = new List<List<string>>();            //Tablica tablic (dwuwymiarowa tablica) trzymająca dane z netstat -ano czyli LISTENINGI i podsłuchy
+        String WatchStatus = "LISTENING";                                       //Tutaj ustawiasz czy program ma alarmować przy wykryciu innego statusu niż LISTEINING 
+        String DefaultGetaway = "";                                             // Zmienna która będzie trzymać Twój Default Getaway
+        Process Process = new System.Diagnostics.Process();                     // Proces cmd którym będziemy zadawać pytania 
+        String PASSWORD=""; // HASŁO DO SIECI WIFI                              //Zmienna na Twoje hasło WIFI
+        String SSID = ""; // SSID WIFI                                          //Zmienna na nazwę Twojej sieci WIFI
+        String SZYFROWANIE = ""; //SZYFROWANIE                                  //Zmienna na typ szyfrowania 
+        PasswordStrength SprawdzaczSilyHasla = new PasswordStrength();          //Tworzymy obiekt klasy PasswordStrength który obsłuzy nam sprawdzanie mocy hasła itd
+        int IloscPodlaczonychUrzadzen = 0;                                      //Zmienna sprawdzająca czy są jakieś nowe IP w arp -a. na jej podstawie wyzwala się alarm
+        int iloscThreadow = 0;                                                  //Ilość wykonujących się wątków
+        int punktacja = 0;                                                      // Punktacja mocy hasła wifi                                 
+        List<string> OdpowiedzMultiThreadu = new List<string>();                //Lista do której pakują się wszystkie odpowiedzi z wątków pingujących podsieć
         //THREADY
-        Thread th1;
-        Thread th2;
+        Thread th1; //Thready odpowiedzialne za pingowanie
+        Thread th2; //Thread odpowiedzialny za uruchamianie threadów odpowiedzialnych za pingowanie
         //====================================== U R U C H O M I E N I E  FORM1====================//
         public Form1()
         {
-            
             InitializeComponent();
             ipAddress = NetworkGateway();
             SkanujPodsiec();
-            
-            myTimer.Tick += new EventHandler(TimerEventProcessor);
-           myTimer.Interval = 5000;
-           myTimer.Start();
-
+            myTimer.Tick += new EventHandler(TimerEventProcessor); //Inicjalizujemy sobie zegarek który będzie cykał co 5 sekund i wywoływał okreslone metody
+            myTimer.Interval = 5000;
+            myTimer.Start();
             Process.Start();
             CmdQueryAdmin("arp -d");
+            log_textbox.AppendText("\r\n\r\n Witaj! Przed rozpoczęciem monitoringu robię wstępne zapytanie arp -a \r\n");
+            log_textbox.AppendText(DateTime.Now + "\r\n");
             log_textbox.AppendText(CmdQuery("arp"," -a"));
+            log_textbox.AppendText("\r\n\r\n ----------------------------------------------------------------------------------- \r\n");
             UruchomPingowaniePodsieci();
-
-
             notifyIcon1.Visible = true;
-
         }
         //====================================== E V E N T Y  T I M E R A =========================//
         static System.Windows.Forms.Timer myTimer = new System.Windows.Forms.Timer();
         private void TimerEventProcessor(Object myObject, EventArgs myEventArgs)
         {
-            
             String PingOutput = (CmdQuery("ping ", DefaultGetaway + " -n 1"));
             if (PingOutput.IndexOf("unreachable") >= 0)
             {
@@ -81,59 +71,36 @@ namespace M_Andrzejkowicz_v1
                 IntervalPingTextbox.Text = "Pingowanie "+DefaultGetaway+" OK \r\n " + DateTime.Now;
                 IntervalPingTextbox.BackColor = Color.Green;
             }
-
-            if(progressReport.sprawdzArpa==true)  // Funkcja wywolywana po zakonczeniu pingowania podsieci
+            //Thready
+            if(iloscThreadow>=255)
             {
                 Console.WriteLine("Siec została spingowana pomyślnie. stan arp -a to:");
-                log_textbox.AppendText("Siec została spingowana pomyślnie. stan arp -a to:");
-                string[] arp = SprawdzArpA();
-                foreach(string a in arp)
+                log_textbox.AppendText("\r\n\r\n Siec została spingowana pomyślnie. stan arp -a \r\n");
+                log_textbox.AppendText(DateTime.Now + "\r\n");
+                string[] arpa = SprawdzArpA();
+                foreach (string a in arpa)
                 {
                     Console.WriteLine(a + "\r\n");
                     log_textbox.AppendText(a + "\r\n");
                 }
-
-                progressReport.sprawdzArpa = false;
-            }
-
-            //Thready
-            if(iloscThreadow>=255)
-            {
                 iloscThreadow = 0;
-                log_textbox.AppendText("PISZE!");
-                //log_textbox.Clear();
-
                 string arp = CmdQuery("arp", " -a");
-
-                log_textbox.AppendText(arp+ "\r\n===================================================\r\n");
-                log_textbox.AppendText(DateTime.Now+"\r\n");
-
                 if(IloscPodlaczonychUrzadzen != arp.Length)
                 {
-
-
                     IloscPodlaczonychUrzadzen = arp.Length;
                     if(powiadomienia.Checked)
                     {
                         notifyIcon1.ShowBalloonTip(1000, "Uwaga","Ilość podłączonych urządzeń uległa zmianie!", ToolTipIcon.Info);
                         log_textbox.AppendText("\r\n Uwaga! Ilość podłączonych urządzeń uległa zmianie! " + DateTime.Now + "\r\n");
-                    }
-                    
-                   
+                    }                   
                 }
-
                 OdpowiedzMultiThreadu.Clear();
                 UruchomPingowaniePodsieci();
-                
-
             }
-
-
             LISTA.Items.Clear();
             skanuj_button_Click(ipAddress);
             SprawdzPodsluchy();
             SkanujPodsiec();
-
         }
         //====================================== Z A P Y T A N I A  D O  C M D =========================//
         private string CmdQuery(string FileName, string Arguments = "")
@@ -264,42 +231,11 @@ namespace M_Andrzejkowicz_v1
         {
             string query = CmdQuery("arp", " -a");
             String[] Output;
-
             query = query.Replace("\r\n", "|");
             query = query.Replace("\n", "|");
             Char[] delimiter = { '|'};
             Output = query.Split(delimiter);
-
-
             return Output;
-            
-        }
-        private Task ProcessData(IProgress<ProgressReport> progress,int ostatnia_liczba)
-        {
-            
-            return Task.Run(() =>
-            {
-
-
-                    string IpAddress = DefaultGetaway;
-                    String Query = (CmdQuery("ping", " 192.168.0." + ostatnia_liczba + " -n 1"));
-                    Console.WriteLine(Query);
-                    //progressReport.PercentComplete = i;
-                    progressReport.ConsoleOutput = Query;
-                    progress.Report(progressReport);
-
-
-                progressReport.PercentComplete = 0;
-                progressReport.ConsoleOutput = "\r\n======================================\r\n " +
-                                                "Pingowanie podsieci zakończone powodzeniem " +
-                                                "\r\n======================================\r\n";
-                progressReport.sprawdzArpa = true;
-                return;
-
-
-
-            });
-
         }
         private void SprawdzNazweWifi()
         {
@@ -366,6 +302,7 @@ namespace M_Andrzejkowicz_v1
             else if(punktacja>=260)
             {
                 log_textbox.AppendText("\r\n HASŁO WIFI JEST MOCNE! Jego siła wynosi: " + punktacja + "\r\n");
+
             }
         }
         private void SprawdzanieSilyHasla()
@@ -381,26 +318,10 @@ namespace M_Andrzejkowicz_v1
                 Console.WriteLine(a);
                 log_textbox.AppendText(a + "\r\n");
             }
-
         }
         private void button6_Click(object sender, EventArgs e)
         {
             CmdQueryAdmin("arp -d -a");
-        }
-        private void button7_Click(object sender, EventArgs e)
-        {
-        }
-        private void PingZakres_start_ValueChanged(object sender, EventArgs e)
-        {
-
-        }
-        private void ping_zarkesSTART_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-        private void zakres_text_box_TextChanged(object sender, EventArgs e)
-        {
-
         }
         private void button2_Click(object sender, EventArgs e)
         {
@@ -410,27 +331,21 @@ namespace M_Andrzejkowicz_v1
             SprawdzanieSilyHasla();
             SprawdzMocHasłaWifi();
         }
-        private void hScrollBar1_ValueChanged(object sender, EventArgs e)
-        {
-
-        }
         private void Form1_SizeChanged(object sender, EventArgs e)
         {
-            notifyIcon1.Icon = SystemIcons.Application;
-            notifyIcon1.BalloonTipText = "Aplikacja działa w tle";
-            notifyIcon1.ShowBalloonTip(1000);
-            this.ShowInTaskbar = false;
+            if (WindowState == FormWindowState.Minimized)
+            {
+                notifyIcon1.Icon = SystemIcons.Application;
+                notifyIcon1.BalloonTipText = "Aplikacja działa w tle";
+                notifyIcon1.ShowBalloonTip(1000);
+                this.ShowInTaskbar = false;
+            }
         }
         private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             this.WindowState = FormWindowState.Normal;
             this.ShowInTaskbar = true;
 
-        }
-        private async void skanuj_button_Click(object sender, EventArgs e)
-        {
-
-            
         }
         private void radioButton1_CheckedChanged(object sender, EventArgs e)
         {
@@ -516,34 +431,23 @@ namespace M_Andrzejkowicz_v1
         {
             HasloWifi.UseSystemPasswordChar = true;
         }
-        private void button8_Click(object sender, EventArgs e)
-        {
-            
-        }
         // URUCHAMIANIE MULTITHREADOWEGO PINGOWANIA
         private void button1_Click(object sender, EventArgs e)
         {
-
             UruchomPingowaniePodsieci();
         }
         private void UruchomPingowaniePodsieci()
         {
-            
             th2 = new Thread(() => UruchamiePingowaniaPodsieciThread());
             th2.Start();
-
         }
         private void UruchamiePingowaniaPodsieciThread()
         {
-
-            progressReport.PublicznaLista.Clear();
-            sprawdzajThready = true;
             for (int i = 0; i < 255; i++)
             {
                 th1 = new Thread(() => ThreadTest(i));
                 Thread.Sleep(45);
                 th1.Start();
-                
             }
         }
         public void ThreadTest(int i)
@@ -557,38 +461,10 @@ namespace M_Andrzejkowicz_v1
                 iloscThreadow += 1;
                 Console.WriteLine("ilosc threadow: " + iloscThreadow);
                 Console.WriteLine("length : " + OdpowiedzMultiThreadu.Count);
-
             }
             catch
             {
-
             }
-
-        }
-
-        private void log_textbox_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void log_label_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label5_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void IntervalPingTextbox_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void pictureBox1_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }
