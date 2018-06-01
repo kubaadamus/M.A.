@@ -57,6 +57,11 @@ namespace M_Andrzejkowicz_v1
            myTimer.Tick += new EventHandler(TimerEventProcessor);
            myTimer.Interval = 5000;
            myTimer.Start();
+
+            Process.Start();
+            CmdQueryAdmin("arp -d");
+            log_textbox.AppendText(CmdQuery("arp"," -a"));
+            UruchomPingowaniePodsieci();
         }
         //====================================== E V E N T Y  T I M E R A =========================//
         static System.Windows.Forms.Timer myTimer = new System.Windows.Forms.Timer();
@@ -93,17 +98,27 @@ namespace M_Andrzejkowicz_v1
             }
 
             //Thready
-            if(iloscThreadow==255)
+            if(iloscThreadow>=255)
             {
                 iloscThreadow = 0;
                 log_textbox.AppendText("PISZE!");
                 //log_textbox.Clear();
 
-                log_textbox.AppendText(CmdQuery("arp"," -a")+ "\r\n===================================================\r\n");
+                string arp = CmdQuery("arp", " -a");
+
+                log_textbox.AppendText(arp+ "\r\n===================================================\r\n");
                 log_textbox.AppendText(DateTime.Now+"\r\n");
 
+                if(IloscPodlaczonychUrzadzen != arp.Length)
+                {
+                    IloscPodlaczonychUrzadzen = arp.Length;
+                    //MessageBox.Show(IloscPodlaczonychUrzadzen.ToString());
+                    notifyIcon1.ShowBalloonTip(1000, "uwaga uwaga", "ilosc :" + IloscPodlaczonychUrzadzen, ToolTipIcon.Info);
+                   
+                }
+
                 OdpowiedzMultiThreadu.Clear();
-                //UruchomPingowaniePodsieci();
+                UruchomPingowaniePodsieci();
                 
 
             }
@@ -114,17 +129,16 @@ namespace M_Andrzejkowicz_v1
 
 
 
-            //string macAddress = string.Empty;
-
             Process.StartInfo.FileName = FileName;
             Process.StartInfo.Arguments = Arguments;
             Process.StartInfo.UseShellExecute = false;
             Process.StartInfo.RedirectStandardOutput = true;
             Process.StartInfo.CreateNoWindow = true;
+            
+            Process.Start();
             string output = "";
 
-                Process.Start();
-                output = Process.StandardOutput.ReadToEnd();
+            output = Process.StandardOutput.ReadToEnd();
                 while (output.IndexOf("  ") > 0)
                 {
                     output = output.Replace("  ", " ");
@@ -319,7 +333,7 @@ namespace M_Andrzejkowicz_v1
         }
         private void button6_Click(object sender, EventArgs e)
         {
-            CmdQueryAdmin("arp -d");
+            CmdQueryAdmin("arp -d -a");
         }
         private void button7_Click(object sender, EventArgs e)
         {
@@ -506,20 +520,28 @@ namespace M_Andrzejkowicz_v1
             for (int i = 0; i < 255; i++)
             {
                 th1 = new Thread(() => ThreadTest(i));
-                Thread.Sleep(20);
+                Thread.Sleep(45);
                 th1.Start();
+                
             }
         }
         public void ThreadTest(int i)
         {
+            try
+            {
+                String Query = (CmdQuery("ping", " 192.168.0." + i + " -n 1"));
+                OdpowiedzMultiThreadu.Add(Query);
+                Console.WriteLine(Query);
+                Console.WriteLine("Wątek nr " + i + " zakonczył dzialanie!");
+                iloscThreadow += 1;
+                Console.WriteLine("ilosc threadow: " + iloscThreadow);
+                Console.WriteLine("length : " + OdpowiedzMultiThreadu.Count);
 
-            String Query = (CmdQuery("ping", " 192.168.0." + i + " -n 1"));
-            OdpowiedzMultiThreadu.Add(Query);
-            Console.WriteLine(Query);
-            Console.WriteLine("Wątek nr " + i + " zakonczył dzialanie!");
-            iloscThreadow += 1;
-            Console.WriteLine("ilosc threadow: " + iloscThreadow);
-            Console.WriteLine("length : " + OdpowiedzMultiThreadu.Count);
+            }
+            catch
+            {
+
+            }
 
         }
 
